@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import Users from '../data/users';
 
 class Content extends Component {
   render() {
     return (
       <div>
-        <p>Hello</p>
+        {Users.map(user => (
+          <p key={user.userName}> {user.email} </p>
+        ))}
       </div>
     );
   }

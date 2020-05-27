@@ -1,0 +1,141 @@
+[{
+	"name": "Minecraft Episode 1",
+	"description": "Minecraft Episode 1",
+	"date": {
+		"$date": {
+			"$numberLong": 159091432200
+		}
+	},
+	"attendees": [null, null, null, null, null],
+	"location": {
+		"streetNo": null,
+		"streetName": null,
+		"city": null,
+		"postalCode": null,
+		"province": null
+	},
+	"status": {
+		"isFlagged": true,
+		"reason": "Spamming"
+	}
+}, {
+	"name": "JS Workshop - Creating your own Front-End Framework",
+	"description": "JS Workshop - Creating your own Front-End Framework",
+	"date": {
+		"$date": {
+			"$numberLong": 158965140300
+		}
+	},
+	"attendees": [null, null, null, null, null],
+	"location": {
+		"streetNo": null,
+		"streetName": null,
+		"city": null,
+		"postalCode": null,
+		"province": null
+	},
+	"status": {
+		"isFlagged": true,
+		"reason": "Spamming"
+	}
+}, {
+	"name": "TechTO Together",
+	"description": "TechTO Together",
+	"date": {
+		"$date": {
+			"$numberLong": 159652524200
+		}
+	},
+	"attendees": [null, null, null, null, null],
+	"location": {
+		"streetNo": null,
+		"streetName": null,
+		"city": null,
+		"postalCode": null,
+		"province": null
+	},
+	"status": {
+		"isFlagged": true,
+		"reason": "Rude behaviour"
+	}
+}, {
+	"name": "Introducing CSS Selectors",
+	"description": "Introducing CSS Selectors",
+	"date": {
+		"$date": {
+			"$numberLong": 158862480900
+		}
+	},
+	"attendees": [null, null, null, null, null],
+	"location": {
+		"streetNo": null,
+		"streetName": null,
+		"city": null,
+		"postalCode": null,
+		"province": null
+	},
+	"status": {
+		"isFlagged": true,
+		"reason": "Racist behaviour"
+	}
+}, {
+	"name": "AI and Healthcare: Best Practices for Better Outcomes",
+	"description": "AI and Healthcare: Best Practices for Better Outcomes",
+	"date": {
+		"$date": {
+			"$numberLong": 159444053800
+		}
+	},
+	"attendees": [null, null, null, null, null],
+	"location": {
+		"streetNo": null,
+		"streetName": null,
+		"city": null,
+		"postalCode": null,
+		"province": null
+	},
+	"status": {
+		"isFlagged": true,
+		"reason": "Use of foul language"
+	}
+}, {
+	"name": "Introduction to Applied Deep Learning",
+	"description": "Introduction to Applied Deep Learning",
+	"date": {
+		"$date": {
+			"$numberLong": 159000291300
+		}
+	},
+	"attendees": [null, null, null, null, null],
+	"location": {
+		"streetNo": null,
+		"streetName": null,
+		"city": null,
+		"postalCode": null,
+		"province": null
+	},
+	"status": {
+		"isFlagged": false,
+		"reason": "Use of sexual innuendo"
+	}
+}, {
+	"name": "Data science for fun and impact - how to maintain motivation",
+	"description": "Data science for fun and impact - how to maintain motivation",
+	"date": {
+		"$date": {
+			"$numberLong": 158714177500
+		}
+	},
+	"attendees": [null, null, null, null, null],
+	"location": {
+		"streetNo": null,
+		"streetName": null,
+		"city": null,
+		"postalCode": null,
+		"province": null
+	},
+	"status": {
+		"isFlagged": false,
+		"reason": "Spamming"
+	}
+}]
