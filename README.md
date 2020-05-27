@@ -1,3 +1,7 @@
+Project is deployed at https://gather-app.netlify.app/
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/42a28e08-accd-4969-978f-ac9cb6cd0fde/deploy-status)](https://app.netlify.com/sites/gather-app/deploys)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
