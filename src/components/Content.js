@@ -1,11 +1,29 @@
 import React, { Component } from 'react';
-import Users from '../data/users';
 
 class Content extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: [],
+    };
+  }
+
+  async componentDidMount() {
+    try {
+      const res = await fetch('https://gather-app-ca.herokuapp.com/users');
+      const users = await res.json();
+      this.setState({ users });
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  }
+
   render() {
+    const { users } = this.state;
     return (
       <div>
-        {Users.map(user => (
+        {users.map(user => (
           <p key={user.userName}> {user.email} </p>
         ))}
       </div>
