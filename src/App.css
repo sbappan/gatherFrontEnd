@@ -13,4 +13,5 @@ body {
 
 main {
   flex-grow: 2;
+  height: 85vh;
 }
