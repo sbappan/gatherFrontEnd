@@ -5,7 +5,7 @@ class ViewGroup extends Component {
     super(props);
 
     this.state = {
-      group: [],
+      group: {},
     };
   }
 
@@ -22,20 +22,27 @@ class ViewGroup extends Component {
 
   render() {
     const { group } = this.state;
-    console.log('group: ', group.interests);
     return (
       <div>
         <h2>{group.name}</h2>
         <p>{group.description}</p>
-        {/* <div>
-          <h5>Members</h5>
-          {!group.members ? "" : group.members.map(member => (
-          <p key={member.userName}> {member.email} </p>
-        ))}
-        </div> */}
         <div>
-          {!group.interests ? "" : group.interests.map(interest => (
-          <p key={interest._id}> {interest.name} </p>
+          <div>
+            <h4>Status</h4>
+            <p>Flagged: <span>{group.status ? (group.status.isFlagged ? "Yes" : "No") : ""}</span></p>
+            <p>Reason: <span>{group.status ? group.status.reason : ""}</span></p>
+          </div>
+          <div>
+            <h4>Interests</h4>
+            {!group.interests ? "" : group.interests.map(interest => (
+            <p key={interest._id}> {interest.name} </p>
+          ))}
+          </div>
+        </div>
+        <div>
+          <h4>Members</h4>
+          {!group.members ? "" : group.members.map(member => (
+          <p key={member._id}> {member.fname} {member.lname} {member.isAdmin ? "(admin)" : ""}</p>
         ))}
         </div>
       </div>
