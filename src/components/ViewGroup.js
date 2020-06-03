@@ -11,7 +11,7 @@ class ViewGroup extends Component {
 
   async componentDidMount() {
     try {
-      const groupId = '5ece7b0cb840c08079e5ea1f';
+      const groupId = this.props.match.params._id;
       const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups/${groupId}`);
       const group = await res.json();
       this.setState({ group });
@@ -22,6 +22,7 @@ class ViewGroup extends Component {
 
   render() {
     const { group } = this.state;
+    console.log('group: ', group);
     return (
       <div>
         <h2>{group.name}</h2>
@@ -29,21 +30,33 @@ class ViewGroup extends Component {
         <div>
           <div>
             <h4>Status</h4>
-            <p>Flagged: <span>{group.status ? (group.status.isFlagged ? "Yes" : "No") : ""}</span></p>
-            <p>Reason: <span>{group.status ? group.status.reason : ""}</span></p>
+            <p>
+              {'Flagged: '}
+              <span>{group.status && (group.status.isFlagged ? 'Yes' : 'No')}</span>
+            </p>
+            {group.status && group.status.isFlagged && (
+              <p>
+                {`Reason: ${group.status.reason}`}
+              </p>
+            )}
           </div>
           <div>
             <h4>Interests</h4>
-            {!group.interests ? "" : group.interests.map(interest => (
-            <p key={interest._id}> {interest.name} </p>
-          ))}
+            {group.interests && group.interests.map((interest) => (
+              <p key={interest._id}>
+                {interest.name}
+              </p>
+            ))}
           </div>
         </div>
         <div>
           <h4>Members</h4>
-          {!group.members ? "" : group.members.map(member => (
-          <p key={member._id}> {member.fname} {member.lname} {member.isAdmin ? "(admin)" : ""}</p>
-        ))}
+          {group.members && group.members.map((member) => (
+            <p key={member._id}>
+              {`${member.fname} ${member.lname} `}
+              {member.isAdmin ? '(admin)' : ''}
+            </p>
+          ))}
         </div>
       </div>
     );

@@ -10,8 +10,15 @@ body {
   display: flex;
   flex-direction: column;
 }
+header, footer {
+  background-color: #111111;
+  color: whitesmoke;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
 
 main {
   flex-grow: 2;
-  height: 85vh;
+  min-height: 85vh;
 }
