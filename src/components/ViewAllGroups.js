@@ -24,12 +24,13 @@ class ViewAllGroups extends Component {
     const { groups } = this.state;
     return (
       <div>
+        <h2>Groups</h2>
         {groups.map((group) => (
-          <Link to={`/groups/${group._id}`} key={group._id}>
-            <p>
+          <p>
+            <Link to={`/groups/${group._id}`} key={group._id}>
               {group.name}
-            </p>
-          </Link>
+            </Link>
+          </p>
         ))}
       </div>
     );

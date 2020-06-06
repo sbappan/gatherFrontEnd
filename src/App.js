@@ -13,19 +13,19 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <main>
-        <Router>
+    <Router>
+      <div className="App">
+        <Header />
+        <main>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/groups" component={ViewAllGroups} />
             <Route path="/groups/:_id" component={ViewGroup} />
           </Switch>
-        </Router>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
