@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import Home from './components/Home';
 import ViewAllGroups from './components/ViewAllGroups';
 import ViewGroup from './components/ViewGroup';
+import FlagGroup from './components/FlagGroup';
 import './App.css';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/groups" component={ViewAllGroups} />
+            <Route path="/groups/flag/:_id" component={FlagGroup} />
             <Route path="/groups/:_id" component={ViewGroup} />
           </Switch>
         </main>
