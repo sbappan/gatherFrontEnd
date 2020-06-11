@@ -44,13 +44,23 @@ main {
 
 main button {
   border: 0;
-  background: none;
   border-radius: .2rem;
   cursor: pointer;
   height: 3rem;
   padding: 1rem 1.25rem;
   color: #eeeeee;
   font-size: 1rem;
+  margin-right: 1rem;
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+  transition-duration: 0.3s;
+  transition-property: all;
+}
+
+main button:hover, main button:focus {
+  transform: translate3d(0, 2px, 0);
 }
 
 main button.danger {
@@ -123,8 +133,4 @@ main button.success {
   height: 10rem;
   width: 50%;
   font-size: 1.4rem;
-}
-
-.flagGroup form button[type="button"], .flagButtons button:first-child{
-  margin-left: 1rem;
 }
