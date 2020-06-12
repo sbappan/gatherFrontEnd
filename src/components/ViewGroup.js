@@ -11,18 +11,18 @@ class ViewGroup extends Component {
 
   async componentDidMount() {
     try {
-      const groupId = this.props.match.params._id;
+      const { match } = this.props;
+      const groupId = match.params._id;
       const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups/${groupId}`);
       const group = await res.json();
       this.setState({ group });
     } catch (error) {
-      console.log('error: ', error);
+      // console.log('error: ', error);
     }
   }
 
   render() {
     const { group } = this.state;
-    console.log('group: ', group);
     return (
       <div>
         <h2>{group.name}</h2>

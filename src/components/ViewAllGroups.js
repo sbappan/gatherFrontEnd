@@ -1,31 +1,33 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import UnflagButton from './UnflagButton';
+import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
+import { createUpdateItem } from '../Helpers';
 
-class ViewAllGroups extends Component {
+export default class ViewAllGroups extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       groups: [],
+      allGroups: [],
+      activeFilter: 'All',
     };
     this.handleClick = this.handleClick.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
   }
-
-  // Consider adding an option for filtering flagged, unflagged and all groups
 
   async componentDidMount() {
     try {
       const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups`);
       const groups = await res.json();
-      this.setState({ groups });
+      this.setState({ groups, allGroups: groups });
     } catch (error) {
-      console.log('error: ', error);
+      // console.log('error: ', error);
     }
   }
 
-  handleClick(groupId) {
-    const method = 'PUT';
+  async handleClick(groupId) {
+    const { activeFilter } = this.state;
     const bodyData = {
       status: {
         isFlagged: false,
@@ -33,75 +35,65 @@ class ViewAllGroups extends Component {
       },
     };
 
-    fetch(`${process.env.REACT_APP_API_LINK}/groups/${groupId}`, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(bodyData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({ groups: data });
-      })
-      .catch((error) => {
-      });
+    const updatedData = await createUpdateItem('PUT', 'groups', groupId, bodyData);
+    if (updatedData.length > 0) {
+      this.setState({ allGroups: updatedData });
+      this.handleFilter(activeFilter);
+    }
+  }
+
+  handleFilter(text) {
+    const { allGroups } = this.state;
+    if (text === 'All') {
+      this.setState({ groups: allGroups, activeFilter: text });
+    } else {
+      const condition = text === 'Flagged';
+      const filteredGroups = allGroups.filter((group) => group.status.isFlagged === condition);
+      this.setState({ groups: filteredGroups, activeFilter: text });
+    }
   }
 
   render() {
-    const { groups } = this.state;
+    const { groups, allGroups, activeFilter } = this.state;
 
-    if (groups.length === 0) {
+    if (allGroups.length === 0) {
       return <h3>Loading....</h3>;
     }
 
     return (
-      <div className="allGroups">
+      <div className="allItemsList">
         <div>
           <h2>Groups</h2>
-          <h4>Reason for flagging </h4>
+          <FilterItemsButtons handleFilter={this.handleFilter} activeFilter={activeFilter} />
+          {(groups.some((group) => group.status.isFlagged)) && <h4>Reason for flagging </h4>}
         </div>
         <div>
           {groups.map((group) => (
-            <div key={group._id}>
-              <div>
-                <div>
-                  <Link to={`/groups/${group._id}`}>
-                    {group.name}
-                  </Link>
-                  {!group.status.isFlagged
-                    ? <Button group={group} text="Flag Group" className="danger" />
-                    : (
-                      <span className="flagButtons">
-                        <UnflagButton groupId={group._id} handleClick={this.handleClick} />
-                        <Button group={group} text="Edit Reason" className="success" />
-                      </span>
-                    )}
-                </div>
-                <div>
-                  {group.status.isFlagged && (
-                  <div className="overflowEllipsis">
-                    {group.status.reason}
-                  </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            <GroupRow key={group._id} group={group} handleClick={this.handleClick} />
           ))}
+          {groups.length === 0 && <p>No groups found. Please modify the filter option.</p>}
         </div>
       </div>
     );
   }
 }
 
-function Button({ group, className, text }) {
+function GroupRow({ group, handleClick }) {
   return (
-    <Link to={`/groups/flag/${group._id}`} key={group._id}>
-      <button type="button" className={className}>
-        {text}
-      </button>
-    </Link>
+    <div>
+      <div>
+        <Link to={`/groups/${group._id}`}>
+          {group.name}
+        </Link>
+        <FlagItemRowButtons item={group} collection="groups" handleClick={handleClick} />
+      </div>
+      <div>
+        {group.status.isFlagged && (
+        <div className="overflowEllipsis">
+          {group.status.reason}
+        </div>
+        )}
+      </div>
+    </div>
   );
 }
-
-export default ViewAllGroups;
