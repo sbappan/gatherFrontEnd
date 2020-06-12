@@ -59,8 +59,13 @@ main button {
   transition-property: all;
 }
 
-main button:hover, main button:focus {
+main button:hover {
   transform: translate3d(0, 2px, 0);
+}
+
+main button:focus {
+  transform: translate3d(0, -2px, 0);
+  outline-color: white;
 }
 
 main button.danger {
@@ -76,22 +81,47 @@ main button.success {
   background-color: dodgerblue;
 }
 
+.allItemsList .filterButton {
+  border: 1px solid #c83349;
+  background: white;
+  color: #111111;
+}
+
+.allItemsList .filterButton:hover, .allItemsList .activeFilter {
+  background: #c83349;
+  color: whitesmoke;
+}
+
+main button.filterButton:focus {
+  outline-color: #c83349;
+}
+
 .overflowEllipsis {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
-.allGroups > div:first-child {
+.allItemsList > div:first-child {
   display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.allItemsList > div:first-child h2 {
+  width: 25%;
+}
+
+.allItemsList > div:first-child > div {
+  width: 40%;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
 }
 
-.allGroups > div:first-child h2 {
-  width: 75%;
-}
-
-.allGroups > div:last-child > div > div > div:first-child {
+.allItemsList > div:last-child > div > div:first-child {
   height: 5rem;
   width: 60%;
   display: flex;
@@ -101,7 +131,7 @@ main button.success {
   margin: 0 1rem;
 }
 
-.allGroups> div:last-child > div > div > div:last-child  {
+.allItemsList> div:last-child > div > div:last-child  {
   width: 30%;
   height: 5rem;
   display: flex;
@@ -109,27 +139,27 @@ main button.success {
   align-items: center;
 }
 
-.allGroups> div:last-child > div > div{
+.allItemsList> div:last-child > div {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
 }
  
-.allGroups a {
+.allItemsList a {
   color: #111111;
   text-decoration: none;
 }
 
-.allGroups > div > div:nth-child(even) {
+.allItemsList > div:last-child > div:nth-child(even) {
   background-color: whitesmoke;
 }
 
-.allGroups button {
-  width: 9rem;
+.allItemsList button {
+  width: 8.5rem;
 }
 
-.flagGroup textarea {
+.flagItem textarea {
   height: 10rem;
   width: 50%;
   font-size: 1.4rem;
