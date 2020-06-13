@@ -11,6 +11,7 @@ import ViewAllGroups from './components/ViewAllGroups';
 import ViewGroup from './components/ViewGroup';
 import FlagGroup from './components/FlagGroup';
 import './App.css';
+import ViewEvent from './components/ViewEvent';
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
             <Route exact path="/groups" component={ViewAllGroups} />
             <Route path="/groups/flag/:_id" component={FlagGroup} />
             <Route path="/groups/:_id" component={ViewGroup} />
+
+            <Route exact path="/test/:_id" component={ViewEvent} />
           </Switch>
         </main>
         <Footer />
