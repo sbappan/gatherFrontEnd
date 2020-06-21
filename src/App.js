@@ -10,8 +10,9 @@ import Home from './components/Home';
 import ViewAllGroups from './components/ViewAllGroups';
 import ViewGroup from './components/ViewGroup';
 import FlagGroup from './components/FlagGroup';
+import ViewAllEvents from './components/ViewAllEvents';
+import FlagEvent from './components/FlagEvent';
 import './App.css';
-import ViewEvent from './components/ViewEvent';
 
 function App() {
   return (
@@ -25,7 +26,8 @@ function App() {
             <Route path="/groups/flag/:_id" component={FlagGroup} />
             <Route path="/groups/:_id" component={ViewGroup} />
 
-            <Route exact path="/test/:_id" component={ViewEvent} />
+            <Route exact path="/events" component={ViewAllEvents} />
+            <Route path="/events/flag/:_id" component={FlagEvent} />
           </Switch>
         </main>
         <Footer />
