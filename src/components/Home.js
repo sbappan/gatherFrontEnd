@@ -5,7 +5,7 @@ function Home() {
   return (
     <>
       <h1>Welcome to Gather</h1>
-      <Link to="/groups/">
+      <Link to="/admin/groups/">
         <button type="button" className="safe">Go to groups</button>
       </Link>
     </>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { getOneItem } from '../Helpers';
+import { getOneItem, getAllItemsAsObject, getAllItems } from '../Helpers';
+import profile from '../stockProfileImage.jpg';
 
 class ViewProfile extends Component {
   constructor(props) {
@@ -7,6 +8,9 @@ class ViewProfile extends Component {
 
     this.state = {
       user: {},
+      events: [],
+      groupsObj: {},
+      interestsObj: {},
     };
   }
 
@@ -15,18 +19,28 @@ class ViewProfile extends Component {
       const { match } = this.props;
       const userId = match.params._id;
       const user = await getOneItem('users', userId);
-      this.setState({ user });
+      const interestsObj = await getAllItemsAsObject('interests');
+      const groupsObj = await getAllItemsAsObject('groups');
+      const allEvents = await getAllItems('events');
+      const events = allEvents.filter((event) => event.attendees.includes(user._id));
+
+      this.setState({
+        user, events, interestsObj, groupsObj,
+      });
     } catch (error) {
-      /* console.log('error: ', error); */
+      // console.log('error: ', error);
     }
   }
 
   render() {
-    const { user } = this.state;
+    const {
+      user, events, interestsObj, groupsObj,
+    } = this.state;
+    const profileStyle = { width: '15rem', height: 'auto' };
 
     return (
       <div>
-        {/* <img src="" alt="Image goes here"/> */}
+        <img src={profile} alt="Profile" style={profileStyle} />
         <h4>
           {user.fname}
           {' '}
@@ -41,17 +55,23 @@ class ViewProfile extends Component {
         <ul>
           {user.interests && user.interests.map((interest) => (
             <li key={interest}>
-              {interest}
-              {' '}
+              {interestsObj[interest].name}
             </li>
           ))}
         </ul>
-        <h4>Member of</h4>
+        <h4>Groups</h4>
         <ul>
           {user.groups && user.groups.map((group) => (
             <li key={group}>
-              {group}
-              {' '}
+              {groupsObj[group].name}
+            </li>
+          ))}
+        </ul>
+        <h4>Events</h4>
+        <ul>
+          {events.map((event) => (
+            <li key={event._id}>
+              {event.name}
             </li>
           ))}
         </ul>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getOneItem, getAllItems, transformArrayToObject } from '../Helpers';
+import { getOneItem, getAllItemsAsObject } from '../Helpers';
 import { LinkButton } from './Buttons';
 
 class ViewGroup extends Component {
@@ -9,6 +9,7 @@ class ViewGroup extends Component {
     this.state = {
       group: {},
       usersObj: {},
+      interestsObj: {},
     };
   }
 
@@ -17,16 +18,16 @@ class ViewGroup extends Component {
       const { match } = this.props;
       const groupId = match.params._id;
       const group = await getOneItem('groups', groupId);
-      const users = await getAllItems('users');
-      const usersObj = transformArrayToObject(users);
-      this.setState({ group, usersObj });
+      const usersObj = await getAllItemsAsObject('users');
+      const interestsObj = await getAllItemsAsObject('interests');
+      this.setState({ group, usersObj, interestsObj });
     } catch (error) {
       // console.log('error: ', error);
     }
   }
 
   render() {
-    const { group, usersObj } = this.state;
+    const { group, usersObj, interestsObj } = this.state;
     return (
       <div>
         <LinkButton className="success" text="Back to groups" collection="groups" />
@@ -34,22 +35,22 @@ class ViewGroup extends Component {
         <p>{group.description}</p>
         <div>
           <div>
-            <h4>Status</h4>
             <p>
-              {'Flagged: '}
-              <span>{group.status && (group.status.isFlagged ? 'Yes' : 'No')}</span>
+              <b>Status:  </b>
+              <span>{group.status && (group.status.isFlagged ? 'Flagged' : 'Not flagged')}</span>
             </p>
             {group.status && group.status.isFlagged && (
               <p>
-                {`Reason: ${group.status.reason}`}
+                <b>Reason:</b>
+                {`  ${group.status.reason}`}
               </p>
             )}
           </div>
           <div>
             <h4>Interests</h4>
             {group.interests && group.interests.map((interest) => (
-              <p key={interest._id}>
-                {interest.name}
+              <p key={interest}>
+                {interestsObj[interest].name}
               </p>
             ))}
           </div>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export function LinkButton({
   className, text, collection, itemId,
 }) {
-  const toLink = itemId ? `/${collection}/flag/${itemId}` : `/${collection}/`;
+  const toLink = itemId ? `/admin/${collection}/flag/${itemId}` : `/admin/${collection}/`;
   return (
     <Link to={toLink}>
       <button type="button" className={className}>{text}</button>

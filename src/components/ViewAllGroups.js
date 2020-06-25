@@ -81,7 +81,7 @@ function GroupRow({ group, handleClick }) {
   return (
     <div>
       <div>
-        <Link to={`/groups/${group._id}`}>
+        <Link to={`/admin/groups/${group._id}`}>
           {group.name}
         </Link>
         <FlagItemRowButtons item={group} collection="groups" handleClick={handleClick} />
