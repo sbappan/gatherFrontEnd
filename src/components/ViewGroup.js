@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getOneItem, getAllItems, transformArrayToObject } from '../Helpers';
+import { LinkButton } from './Buttons';
 
 class ViewGroup extends Component {
   constructor(props) {
@@ -6,6 +8,7 @@ class ViewGroup extends Component {
 
     this.state = {
       group: {},
+      usersObj: {},
     };
   }
 
@@ -13,18 +16,20 @@ class ViewGroup extends Component {
     try {
       const { match } = this.props;
       const groupId = match.params._id;
-      const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups/${groupId}`);
-      const group = await res.json();
-      this.setState({ group });
+      const group = await getOneItem('groups', groupId);
+      const users = await getAllItems('users');
+      const usersObj = transformArrayToObject(users);
+      this.setState({ group, usersObj });
     } catch (error) {
       // console.log('error: ', error);
     }
   }
 
   render() {
-    const { group } = this.state;
+    const { group, usersObj } = this.state;
     return (
       <div>
+        <LinkButton className="success" text="Back to groups" collection="groups" />
         <h2>{group.name}</h2>
         <p>{group.description}</p>
         <div>
@@ -53,7 +58,7 @@ class ViewGroup extends Component {
           <h4>Members</h4>
           {group.members && group.members.map((member) => (
             <p key={member._id}>
-              {`${member.fname} ${member.lname} `}
+              {`${usersObj[member._id].fname} ${usersObj[member._id].lname} `}
               {member.isAdmin ? '(admin)' : ''}
             </p>
           ))}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
-import { createUpdateItem } from '../Helpers';
+import { createUpdateItem, getAllItems } from '../Helpers';
 
 export default class ViewAllGroups extends Component {
   constructor(props) {
@@ -18,8 +18,7 @@ export default class ViewAllGroups extends Component {
 
   async componentDidMount() {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups`);
-      const groups = await res.json();
+      const groups = await getAllItems('groups');
       this.setState({ groups, allGroups: groups });
     } catch (error) {
       // console.log('error: ', error);

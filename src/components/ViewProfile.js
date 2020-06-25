@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { getOneItem } from '../Helpers';
 
 class ViewProfile extends Component {
   constructor(props) {
@@ -13,8 +14,7 @@ class ViewProfile extends Component {
     try {
       const { match } = this.props;
       const userId = match.params._id;
-      const res = await fetch(`${process.env.REACT_APP_API_LINK}/users/${userId}`);
-      const user = await res.json();
+      const user = await getOneItem('users', userId);
       this.setState({ user });
     } catch (error) {
       /* console.log('error: ', error); */
