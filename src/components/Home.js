@@ -8,6 +8,9 @@ function Home() {
       <Link to="/admin/groups/">
         <button type="button" className="safe">Go to groups</button>
       </Link>
+      <Link to="/admin/users/">
+        <button type="button" className="safe">Go to Users</button>
+      </Link>
     </>
   );
 }
