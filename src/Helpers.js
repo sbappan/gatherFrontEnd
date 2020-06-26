@@ -37,7 +37,7 @@ export async function getAllItemsAsObject(collection) {
  * @param {string} itemId - id of the object to be updated
  * @param {object} bodyData - the data for the object to be created/updated
  */
-export async function createUpdateItem(method, collection, itemId, bodyData) {
+export async function createOrUpdateItem(method, collection, itemId, bodyData) {
   const data = await fetch(`${process.env.REACT_APP_API_LINK}/${collection}/${itemId}`, {
     method,
     headers: {
@@ -49,4 +49,12 @@ export async function createUpdateItem(method, collection, itemId, bodyData) {
     .then((_data) => _data)
     .catch((error) => error);
   return data;
+}
+
+/**
+ * Function returns the input string argument with the first letter capitalized
+ * @param {string} str
+ */
+export function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
