@@ -1,7 +1,7 @@
 // View User
 
 import React, { Component } from 'react';
-import { getOneItem } from '../Helpers';
+import { getOneItem, getAllItemsAsObject } from '../Helpers';
 import { LinkButton } from './Buttons';
 
 export default class ViewUser extends Component {
@@ -10,6 +10,15 @@ export default class ViewUser extends Component {
 
     this.state = {
       user: [],
+      interestsObj: [],
+      groupsObj: [],
+      eventsObj: [],
+      isBanned: true,
+      bannedReason: 'N/A',
+      messageUpdates: false,
+      newGroupUpdates: false,
+      newEventUpdates: false,
+      replyUpdates: false,
     };
   }
 
@@ -18,15 +27,39 @@ export default class ViewUser extends Component {
       const { match } = this.props;
       const userId = match.params._id;
       const user = await getOneItem('users', userId);
-
-      this.setState({ user });
+      const interestsObj = await getAllItemsAsObject('interests');
+      const groupsObj = await getAllItemsAsObject('groups');
+      const eventsObj = await getAllItemsAsObject('events');
+      this.setState({
+        user,
+        interestsObj,
+        groupsObj,
+        eventsObj,
+        isBanned: user.status.isBanned,
+        bannedReason: user.status.reason,
+        messageUpdates: user.emailUpdates.messageUpdates,
+        newGroupUpdates: user.emailUpdates.newGroupUpdates,
+        newEventUpdates: user.emailUpdates.newEventUpdates,
+        replyUpdates: user.emailUpdates.replyUpdates,
+      });
     } catch (error) {
       // console.log('error: ', error);
     }
   }
 
   render() {
-    const { user } = this.state;
+    const {
+      user,
+      interestsObj,
+      groupsObj,
+      eventsObj,
+      isBanned,
+      bannedReason,
+      messageUpdates,
+      newGroupUpdates,
+      newEventUpdates,
+      replyUpdates,
+    } = this.state;
 
     return (
       <div>
@@ -60,21 +93,59 @@ export default class ViewUser extends Component {
 
         <p>
           <b>Interests :</b>
-          {user._id}
+          {user.interests && user.interests.map((interest) => (
+            <p key={interest}>
+              {interestsObj[interest].name}
+            </p>
+          ))}
         </p>
 
         <p>
           <b>Groups :</b>
-          {user.groups && user.groups.map((groups) => (
-            <p key={groups}>
-            // Left off here
+          {user.groups && user.groups.map((group) => (
+            <p key={group}>
+              {groupsObj[group].name}
             </p>
           ))}
         </p>
 
         <p>
           <b>Events :</b>
-          {user._id}
+          {user.events && user.events.map((event) => (
+            <p key={event}>
+              {eventsObj[event].name}
+            </p>
+          ))}
+        </p>
+
+        <p>
+          <b>Status: </b>
+          {isBanned ? 'True' : 'False'}
+        </p>
+
+        <p>
+          <b>Reason: </b>
+          {isBanned && bannedReason}
+        </p>
+
+        <p>
+          <b>Message Updates: </b>
+          {messageUpdates ? 'True' : 'False'}
+        </p>
+
+        <p>
+          <b>New Group Updates: </b>
+          {newGroupUpdates ? 'True' : 'False'}
+        </p>
+
+        <p>
+          <b>New Event Updates: </b>
+          {newEventUpdates ? 'True' : 'False'}
+        </p>
+
+        <p>
+          <b>Reply Updates: </b>
+          {replyUpdates ? 'True' : 'False'}
         </p>
 
       </div>
