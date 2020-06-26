@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FlagItemButtons } from './Buttons';
-import { createUpdateItem, getOneItem } from '../Helpers';
+import { createOrUpdateItem, getOneItem } from '../Helpers';
 
 class FlagGroup extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class FlagGroup extends Component {
     };
 
     if (reason.trim() || !flag) {
-      const updatedData = await createUpdateItem('PUT', 'groups', groupId, bodyData);
+      const updatedData = await createOrUpdateItem('PUT', 'groups', groupId, bodyData);
       if (updatedData.length > 0) {
         this.setState(bodyData.status);
       }

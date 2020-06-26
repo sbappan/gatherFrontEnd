@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { getOneItem, getAllItemsAsObject } from '../Helpers';
-import { LinkButton } from './Buttons';
+import { LinkButtonAdmin } from './Buttons';
 
 class ViewGroup extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class ViewGroup extends Component {
     const { group, usersObj, interestsObj } = this.state;
     return (
       <div>
-        <LinkButton className="success" text="Back to groups" collection="groups" />
+        <LinkButtonAdmin className="success" text="Back to groups" collection="groups" />
         <h2>{group.name}</h2>
         <p>{group.description}</p>
         <div>
