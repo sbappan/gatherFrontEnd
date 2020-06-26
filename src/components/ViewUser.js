@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { getOneItem, getAllItemsAsObject } from '../Helpers';
-import { LinkButton } from './Buttons';
+import { LinkButtonAdmin } from './Buttons';
 
 export default class ViewUser extends Component {
   constructor(props) {
@@ -63,7 +63,7 @@ export default class ViewUser extends Component {
 
     return (
       <div>
-        <LinkButton className="success" text="Back to Users" collection="users" />
+        <LinkButtonAdmin className="success" text="Back to Users" collection="users" />
 
         <h2>
           {user.fname}
