@@ -13,7 +13,10 @@ import FlagGroup from './components/FlagGroup';
 import ViewProfile from './components/ViewProfile';
 import ViewAllUsers from './components/ViewAllUsers';
 import ViewUser from './components/ViewUser';
+import ViewAllEvents from './components/ViewAllEvents';
+import FlagEvent from './components/FlagEvent';
 import './App.css';
+
 
 function App() {
   return (
@@ -29,6 +32,9 @@ function App() {
             <Route path="/users/:_id" component={ViewProfile} />
             <Route exact path="/admin/users" component={ViewAllUsers} />
             <Route path="/admin/users/:_id" component={ViewUser} />
+
+            <Route exact path="/admin/events" component={ViewAllEvents} />
+            <Route path="/admin/events/flag/:_id" component={FlagEvent} />
           </Switch>
         </main>
         <Footer />

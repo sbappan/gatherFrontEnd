@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FlagItemButtons } from './Buttons';
-import { createUpdateItem } from '../Helpers';
+import { createOrUpdateItem, getOneItem } from '../Helpers';
 
 class FlagEvent extends Component {
   constructor(props) {
@@ -19,9 +19,10 @@ class FlagEvent extends Component {
     try {
       const { match } = this.props;
       const eventId = match.params._id;
-      const res = await fetch(`${process.env.REACT_APP_API_LINK}/events/${eventId}`);
-      const event = await res.json();
-      this.setState({ event, reason: event.status.reason, isFlagged: event.status.isFlagged });
+      const event = await getOneItem('events', eventId);
+      this.setState({
+        event, reason: event.status.reason, isFlagged: event.status.isFlagged,
+      });
     } catch (error) {
       // console.log('error: ', error);
     }
@@ -43,7 +44,7 @@ class FlagEvent extends Component {
     };
 
     if (reason.trim() || !flag) {
-      const updatedData = await createUpdateItem('PUT', 'events', eventId, bodyData);
+      const updatedData = await createOrUpdateItem('PUT', 'events', eventId, bodyData);
       if (updatedData.length > 0) {
         this.setState(bodyData.status);
       }
@@ -53,7 +54,9 @@ class FlagEvent extends Component {
   }
 
   render() {
-    const { event, reason, isFlagged } = this.state;
+    const {
+      event, reason, isFlagged,
+    } = this.state;
 
     return (
       <div className="flagItem">
@@ -67,7 +70,7 @@ class FlagEvent extends Component {
         <h3>Reason:</h3>
         <textarea
           name="reason"
-          placeholder="Please enter the reason for flagging the group"
+          placeholder="Please enter the reason for flagging the event"
           value={reason}
           onChange={this.handleChange}
           required

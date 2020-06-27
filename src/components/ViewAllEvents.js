@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
-import { createUpdateItem } from '../Helpers';
+import { createOrUpdateItem, getAllItems } from '../Helpers';
 
 export default class ViewAllEvents extends Component {
   constructor(props) {
@@ -18,8 +18,7 @@ export default class ViewAllEvents extends Component {
 
   async componentDidMount() {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_LINK}/events`);
-      const events = await res.json();
+      const events = await getAllItems('events');
       this.setState({ events, allEvents: events });
     } catch (error) {
       // console.log('error: ', error);
@@ -35,7 +34,7 @@ export default class ViewAllEvents extends Component {
       },
     };
 
-    const updatedData = await createUpdateItem('PUT', 'events', eventId, bodyData);
+    const updatedData = await createOrUpdateItem('PUT', 'events', eventId, bodyData);
     if (updatedData.length > 0) {
       this.setState({ allEvents: updatedData });
       this.handleFilter(activeFilter);
@@ -54,7 +53,9 @@ export default class ViewAllEvents extends Component {
   }
 
   render() {
-    const { events, allEvents, activeFilter } = this.state;
+    const {
+      events, allEvents, activeFilter,
+    } = this.state;
 
     if (allEvents.length === 0) {
       return <h3>Loading....</h3>;
@@ -73,6 +74,7 @@ export default class ViewAllEvents extends Component {
           ))}
           {events.length === 0 && <p>No events found. </p>}
         </div>
+
       </div>
     );
   }
@@ -82,7 +84,7 @@ function EventRow({ event, handleClick }) {
   return (
     <div>
       <div>
-        <Link to={`/events/${event._id}`} style={{ width: '300px' }}>
+        <Link to={`/admin/events/${event._id}`} style={{ width: '250px' }}>
           {event.name}
         </Link>
         <FlagItemRowButtons item={event} collection="events" handleClick={handleClick} />
