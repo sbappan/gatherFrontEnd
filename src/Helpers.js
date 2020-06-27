@@ -18,16 +18,43 @@ export async function getOneItem(collection, itemId) {
 }
 
 /**
+ * Function returns an object with nested objects.
+ * The input array item id as the key for the nested objects.
+ * @param {array} arr - input array to be made into an object
+ * @param {string} key - the key to be used for the nested objects
+ */
+export function convertArrayToObject(arr, key) {
+  const obj = {};
+  arr.forEach((item) => {
+    obj[item[key]] = item;
+  });
+  return obj;
+}
+
+/**
  * Function returns all the items in a collection as an object with the ids as the keys
  * @param {string} collection - ex: 'users', 'groups', 'events', 'interests'
  */
 export async function getAllItemsAsObject(collection) {
-  const obj = {};
   const arr = await getAllItems(collection);
-  arr.forEach((item) => {
-    obj[item._id] = item;
-  });
-  return obj;
+  return convertArrayToObject(arr, '_id');
+}
+
+/**
+ * Function returns either the events where the id is an attendee
+ * or the groups where the id is a member
+ * @param {string} collection - ex: 'groups', 'events'
+ * @param {string} itemId - id of the object to use as condition
+ */
+export async function getAssociatedItems(collection, itemId) {
+  const arr = await getAllItems(collection);
+  if (collection === 'events') {
+    return arr.filter((event) => event.attendees.includes(itemId));
+  } if (collection === 'groups') {
+    // Filters for groups that have the user's id as a member
+    return arr.filter((group) => group.members.find((member) => member._id === itemId));
+  }
+  return null;
 }
 
 /**
