@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getOneItem, getAllItemsAsObject, getAllItems } from '../Helpers';
+import { getOneItem, getAllItemsAsObject, getAssociatedItems } from '../Helpers';
 import profile from '../stockProfileImage.jpg';
 
 class ViewProfile extends Component {
@@ -9,23 +9,22 @@ class ViewProfile extends Component {
     this.state = {
       user: {},
       events: [],
-      groupsObj: {},
+      groups: [],
       interestsObj: {},
     };
   }
 
   async componentDidMount() {
     try {
-      const { match } = this.props;
-      const userId = match.params._id;
+      const { match, itemId } = this.props;
+      const userId = itemId || match.params._id;
       const user = await getOneItem('users', userId);
       const interestsObj = await getAllItemsAsObject('interests');
-      const groupsObj = await getAllItemsAsObject('groups');
-      const allEvents = await getAllItems('events');
-      const events = allEvents.filter((event) => event.attendees.includes(user._id));
+      const events = await getAssociatedItems('events', user._id);
+      const groups = await getAssociatedItems('groups', user._id);
 
       this.setState({
-        user, events, interestsObj, groupsObj,
+        user, events, interestsObj, groups,
       });
     } catch (error) {
       // console.log('error: ', error);
@@ -34,18 +33,16 @@ class ViewProfile extends Component {
 
   render() {
     const {
-      user, events, interestsObj, groupsObj,
+      user, events, interestsObj, groups,
     } = this.state;
-    const profileStyle = { width: '15rem', height: 'auto' };
+    const profileStyle = { width: '10rem', height: 'auto' };
 
     return (
       <div>
+        <h2>
+          {`${user.fname} ${user.lname} (${user.userName})`}
+        </h2>
         <img src={profile} alt="Profile" style={profileStyle} />
-        <h4>
-          {user.fname}
-          {' '}
-          {user.lname}
-        </h4>
         <p>
           <strong>Email </strong>
           {user.email}
@@ -59,14 +56,16 @@ class ViewProfile extends Component {
             </li>
           ))}
         </ul>
+        {user.interests && user.interests.length === 0 && 'None'}
         <h4>Groups</h4>
         <ul>
-          {user.groups && user.groups.map((group) => (
-            <li key={group}>
-              {groupsObj[group].name}
+          {groups.map((group) => (
+            <li key={group._id}>
+              {group.name}
             </li>
           ))}
         </ul>
+        {groups.length === 0 && 'None'}
         <h4>Events</h4>
         <ul>
           {events.map((event) => (
@@ -75,6 +74,7 @@ class ViewProfile extends Component {
             </li>
           ))}
         </ul>
+        {events.length === 0 && 'None'}
       </div>
     );
   }
