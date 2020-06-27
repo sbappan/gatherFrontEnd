@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
-import { createUpdateItem } from '../Helpers';
+import { createOrUpdateItem, getAllItems } from '../Helpers';
 
 export default class ViewAllGroups extends Component {
   constructor(props) {
@@ -18,8 +18,7 @@ export default class ViewAllGroups extends Component {
 
   async componentDidMount() {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups`);
-      const groups = await res.json();
+      const groups = await getAllItems('groups');
       this.setState({ groups, allGroups: groups });
     } catch (error) {
       // console.log('error: ', error);
@@ -35,7 +34,7 @@ export default class ViewAllGroups extends Component {
       },
     };
 
-    const updatedData = await createUpdateItem('PUT', 'groups', groupId, bodyData);
+    const updatedData = await createOrUpdateItem('PUT', 'groups', groupId, bodyData);
     if (updatedData.length > 0) {
       this.setState({ allGroups: updatedData });
       this.handleFilter(activeFilter);
@@ -82,7 +81,7 @@ function GroupRow({ group, handleClick }) {
   return (
     <div>
       <div>
-        <Link to={`/groups/${group._id}`}>
+        <Link to={`/admin/groups/${group._id}`}>
           {group.name}
         </Link>
         <FlagItemRowButtons item={group} collection="groups" handleClick={handleClick} />

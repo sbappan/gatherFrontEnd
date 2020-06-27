@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export function LinkButton({
+export function LinkButtonAdmin({
   className, text, collection, itemId,
 }) {
-  const toLink = itemId ? `/${collection}/flag/${itemId}` : `/${collection}/`;
+  const toLink = itemId ? `/admin/${collection}/flag/${itemId}` : `/admin/${collection}/`;
   return (
     <Link to={toLink}>
       <button type="button" className={className}>{text}</button>
@@ -36,11 +36,11 @@ export function FlagItemButtons({
       { isFlagged ? (
         <>
           <ToggleFlagButton className="safe" itemId={item._id} flag={false} handleClick={handleClick} text="Unflag" />
-          <LinkButton className="success" text={`Back to ${collection}`} collection={collection} />
+          <LinkButtonAdmin className="success" text={`Back to ${collection}`} collection={collection} />
         </>
       )
         : (
-          <LinkButton className="safe" text="Cancel" collection={collection} />
+          <LinkButtonAdmin className="safe" text="Cancel" collection={collection} />
         )}
     </>
   );
@@ -50,11 +50,11 @@ export function FlagItemRowButtons({ item, collection, handleClick }) {
   return (
     <>
       {!item.status.isFlagged
-        ? <LinkButton collection={collection} itemId={item._id} text="Flag" className="danger" />
+        ? <LinkButtonAdmin collection={collection} itemId={item._id} text="Flag" className="danger" />
         : (
           <span className="flagButtons">
             <ToggleFlagButton className="safe" itemId={item._id} handleClick={handleClick} text="Unflag " />
-            <LinkButton collection={collection} itemId={item._id} text="Edit reason" className="success" />
+            <LinkButtonAdmin collection={collection} itemId={item._id} text="Edit reason" className="success" />
           </span>
         )}
     </>

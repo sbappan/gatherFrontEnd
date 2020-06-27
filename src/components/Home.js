@@ -1,13 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import AdminDashboard from './AdminDashboard';
 
 function Home() {
   return (
     <>
-      <h1>Welcome to Gather</h1>
-      <Link to="/groups/">
-        <button type="button" className="safe">Go to groups</button>
-      </Link>
+      <h1>Hi Full Name. Welcome to the Gather admin dashboard.</h1>
+      {/* Once the log in use case is completed,
+          enable loading this dashboard only for super admins */}
+      <AdminDashboard />
+      {/* Once the log in use case is completed,
+          enable loading a different dashboard for all other users */}
     </>
   );
 }

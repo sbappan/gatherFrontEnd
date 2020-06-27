@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FlagItemButtons } from './Buttons';
-import { createUpdateItem } from '../Helpers';
+import { createOrUpdateItem, getOneItem } from '../Helpers';
 
 class FlagGroup extends Component {
   constructor(props) {
@@ -19,8 +19,7 @@ class FlagGroup extends Component {
     try {
       const { match } = this.props;
       const groupId = match.params._id;
-      const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups/${groupId}`);
-      const group = await res.json();
+      const group = await getOneItem('groups', groupId);
       this.setState({ group, reason: group.status.reason, isFlagged: group.status.isFlagged });
     } catch (error) {
       // console.log('error: ', error);
@@ -43,7 +42,7 @@ class FlagGroup extends Component {
     };
 
     if (reason.trim() || !flag) {
-      const updatedData = await createUpdateItem('PUT', 'groups', groupId, bodyData);
+      const updatedData = await createOrUpdateItem('PUT', 'groups', groupId, bodyData);
       if (updatedData.length > 0) {
         this.setState(bodyData.status);
       }

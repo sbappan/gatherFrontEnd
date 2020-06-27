@@ -10,8 +10,9 @@ import Home from './components/Home';
 import ViewAllGroups from './components/ViewAllGroups';
 import ViewGroup from './components/ViewGroup';
 import FlagGroup from './components/FlagGroup';
-import ViewAllEvents from './components/ViewAllEvents';
-import FlagEvent from './components/FlagEvent';
+import ViewProfile from './components/ViewProfile';
+import ViewAllUsers from './components/ViewAllUsers';
+import ViewUser from './components/ViewUser';
 import './App.css';
 
 function App() {
@@ -22,12 +23,12 @@ function App() {
         <main>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/groups" component={ViewAllGroups} />
-            <Route path="/groups/flag/:_id" component={FlagGroup} />
-            <Route path="/groups/:_id" component={ViewGroup} />
-
-            <Route exact path="/events" component={ViewAllEvents} />
-            <Route path="/events/flag/:_id" component={FlagEvent} />
+            <Route exact path="/admin/groups" component={ViewAllGroups} />
+            <Route path="/admin/groups/flag/:_id" component={FlagGroup} />
+            <Route path="/admin/groups/:_id" component={ViewGroup} />
+            <Route path="/users/:_id" component={ViewProfile} />
+            <Route exact path="/admin/users" component={ViewAllUsers} />
+            <Route path="/admin/users/:_id" component={ViewUser} />
           </Switch>
         </main>
         <Footer />
