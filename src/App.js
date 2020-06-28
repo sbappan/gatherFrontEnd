@@ -32,9 +32,9 @@ function App() {
             <Route path="/admin/groups/:_id" component={ViewGroup} />
             <Route exact path="/admin/users" component={ViewAllUsers} />
             <Route path="/admin/users/:_id" component={ViewUser} />
-
             <Route exact path="/admin/events" component={ViewAllEvents} />
             <Route path="/admin/events/flag/:_id" component={FlagEvent} />
+
             <Route path="/users/:_id" component={ViewProfile} />
             <Route exact path="/groups/create" component={CreateGroup} />
           </Switch>

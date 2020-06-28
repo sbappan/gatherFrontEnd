@@ -18,8 +18,7 @@ class FlagEvent extends Component {
 
   async componentDidMount() {
     try {
-      const { match } = this.props;
-      const eventId = match.params._id;
+      const { match: { params: { _id: eventId } } } = this.props;
       const event = await getOneItem('events', eventId);
       const groups = await getOneItem('groups', event.group);
 
@@ -47,7 +46,7 @@ class FlagEvent extends Component {
     };
 
     if (reason.trim() || !flag) {
-      const updatedData = await createOrUpdateItem('PUT', 'events', eventId, bodyData);
+      const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eventId);
       if (updatedData.length > 0) {
         this.setState(bodyData.status);
       }

@@ -11,7 +11,7 @@ export default class ViewAllEvents extends Component {
       events: [],
       allEvents: [],
       activeFilter: 'All',
-      // groups: [],
+      groups: [],
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleFilter = this.handleFilter.bind(this);
@@ -20,9 +20,9 @@ export default class ViewAllEvents extends Component {
   async componentDidMount() {
     try {
       const events = await getAllItems('events');
-      // const groups = await getAllItems('groups');
+      const groups = await getAllItems('groups');
       this.setState({
-        events, allEvents: events, // groups,
+        events, allEvents: events, groups,
       });
     } catch (error) {
       // console.log('error: ', error);
@@ -38,7 +38,7 @@ export default class ViewAllEvents extends Component {
       },
     };
 
-    const updatedData = await createOrUpdateItem('PUT', 'events', eventId, bodyData);
+    const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eventId);
     if (updatedData.length > 0) {
       this.setState({ allEvents: updatedData });
       this.handleFilter(activeFilter);
@@ -58,7 +58,7 @@ export default class ViewAllEvents extends Component {
 
   render() {
     const {
-      events, allEvents, activeFilter, // groups,
+      events, allEvents, activeFilter, groups,
     } = this.state;
 
     if (allEvents.length === 0) {
@@ -67,19 +67,15 @@ export default class ViewAllEvents extends Component {
 
     return (
       <div className="allItemsList">
-        <div>
+        <div style={{ paddingBottom: '10px' }}>
           <h2>Events</h2>
           <h2>Group</h2>
           <FilterItemsButtons handleFilter={this.handleFilter} activeFilter={activeFilter} />
           {(events.some((event) => event.status.isFlagged)) && <h4>Reason for flagging </h4>}
         </div>
         <div>
-          {/* {events.map((event) => groups.map((group) => (
+          {groups.map((group) => events.map((event) => (
             <EventRow key={event._id} event={event} handleClick={this.handleClick} group={group} />
-          )))}
-          {events.length === 0 && <p>No events found. </p>} */}
-          {(events.map((event /* , group */) => (
-            <EventRow key={event._id} event={event} handleClick={this.handleClick} />
           )))}
           {events.length === 0 && <p>No events found. </p>}
         </div>
@@ -88,25 +84,24 @@ export default class ViewAllEvents extends Component {
   }
 }
 
-function EventRow({ event, handleClick /* , group */ }) {
-  // const rowHeight = { height: '5rem' };
+function EventRow({ event, handleClick, group }) {
+  const rowHeight = { height: '5rem' };
   return (
     <div>
-      {/* {event.group !== 'group._id' && (
-      <table>
-        <tr>
-          <td style={{ width: '15rem', rowHeight }}>
+      {event.group === group._id && (
+        <tr style={rowHeight}>
+          <td style={{ width: '15rem', paddingRight: '10px' }}>
             <Link to={`/admin/events/${event._id}`}>
               {event.name}
             </Link>
           </td>
-          <td style={{ width: '10rem', rowHeight }}>
+          <td style={{ width: '14rem' }}>
             {group.name}
           </td>
-          <td style={rowHeight}>
+          <td>
             <FlagItemRowButtons item={event} collection="events" handleClick={handleClick} />
           </td>
-          <td style={{ width: '10rem', rowHeight }}>
+          <td style={{ width: '10rem' }}>
             {event.status.isFlagged && (
             <div className="overflowEllipsis">
               {event.status.reason}
@@ -114,22 +109,7 @@ function EventRow({ event, handleClick /* , group */ }) {
             )}
           </td>
         </tr>
-      </table>
-      )} */}
-
-      <div>
-        <Link to={`/admin/events/${event._id}`} style={{ width: '250px' }}>
-          {event.name}
-        </Link>
-        <FlagItemRowButtons item={event} collection="events" handleClick={handleClick} />
-      </div>
-      <div>
-        {event.status.isFlagged && (
-        <div className="overflowEllipsis">
-          {event.status.reason}
-        </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }
