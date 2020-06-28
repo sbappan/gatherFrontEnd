@@ -55,8 +55,17 @@ export default class CreateGroup extends Component {
 
   async handleClick() {
     const { name, description, interests } = this.state;
+    // ToDo: Once Log In use case is done, add to body the logged in user as group admin
     const bodyData = {
-      name, description, interests,
+      name,
+      description,
+      interests,
+      members: [],
+      comments: [],
+      status: {
+        isFlagged: false,
+        reason: '',
+      },
     };
     const updatedData = await createOrUpdateItem('POST', 'groups', bodyData);
     if (updatedData.insertedCount === 1) {
