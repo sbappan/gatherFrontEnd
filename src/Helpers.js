@@ -61,10 +61,10 @@ export async function getAssociatedItems(collection, itemId) {
  * Function creates a new item or updates an existing item
  * @param {string} method - 'POST' for create,'PUT' for update
  * @param {string} collection - ex: 'users', 'groups', 'events', 'interests'
- * @param {string} itemId - id of the object to be updated
+ * @param {string} itemId - id of the object to be updated, not needed for create
  * @param {object} bodyData - the data for the object to be created/updated
  */
-export async function createOrUpdateItem(method, collection, itemId, bodyData) {
+export async function createOrUpdateItem(method, collection, bodyData, itemId = '') {
   const data = await fetch(`${process.env.REACT_APP_API_LINK}/${collection}/${itemId}`, {
     method,
     headers: {

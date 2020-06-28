@@ -15,8 +15,7 @@ class ViewGroup extends Component {
 
   async componentDidMount() {
     try {
-      const { match } = this.props;
-      const groupId = match.params._id;
+      const { match: { params: { _id: groupId } } } = this.props;
       const group = await getOneItem('groups', groupId);
       const usersObj = await getAllItemsAsObject('users');
       const interestsObj = await getAllItemsAsObject('interests');
