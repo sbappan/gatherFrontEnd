@@ -14,8 +14,7 @@ export default class ViewUser extends Component {
 
   async componentDidMount() {
     try {
-      const { match } = this.props;
-      const userId = match.params._id;
+      const { match: { params: { _id: userId } } } = this.props;
       const user = await getOneItem('users', userId);
 
       this.setState({ user });
@@ -27,10 +26,14 @@ export default class ViewUser extends Component {
   render() {
     const { user } = this.state;
 
+    if (Object.keys(user).length === 0) {
+      return <h3>Loading...</h3>;
+    }
+
     return (
       <div>
         <LinkButtonAdmin className="success" text="Back to Users" collection="users" />
-        {Object.keys(user).length > 0 && <ViewProfile itemId={user._id} />}
+        <ViewProfile itemId={user._id} />
         {user.status && (
           <p>
             <b>Status: </b>

@@ -34,7 +34,7 @@ export default class ViewAllGroups extends Component {
       },
     };
 
-    const updatedData = await createOrUpdateItem('PUT', 'groups', groupId, bodyData);
+    const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, groupId);
     if (updatedData.length > 0) {
       this.setState({ allGroups: updatedData });
       this.handleFilter(activeFilter);

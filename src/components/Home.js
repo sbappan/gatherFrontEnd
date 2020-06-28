@@ -1,5 +1,6 @@
 import React from 'react';
 import AdminDashboard from './AdminDashboard';
+import UserDashboard from './UserDashboard';
 
 function Home() {
   return (
@@ -9,7 +10,8 @@ function Home() {
           enable loading this dashboard only for super admins */}
       <AdminDashboard />
       {/* Once the log in use case is completed,
-          enable loading a different dashboard for all other users */}
+          enable loading UserDashboard for all other users */}
+      <UserDashboard />
     </>
   );
 }
