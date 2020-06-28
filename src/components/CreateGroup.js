@@ -56,6 +56,7 @@ export default class CreateGroup extends Component {
   async handleClick() {
     const { name, description, interests } = this.state;
     // ToDo: Once Log In use case is done, add to body the logged in user as group admin
+    // ToDo: Add client side and server side validation to ensure required fields are present
     const bodyData = {
       name,
       description,
@@ -118,12 +119,15 @@ export default class CreateGroup extends Component {
           <div style={interestFieldSetStyle}>
             {allInterests.map((interest) => (
               <div key={interest._id} style={interestStyle}>
-                <input
-                  type="checkbox"
-                  checked={interest.selected}
-                  onChange={() => this.handleCheckInterest(interest._id)}
-                />
-                <p>{interest.name}</p>
+                <label htmlFor={`${interest.name}-id`}>
+                  <input
+                    id={`${interest.name}-id`}
+                    type="checkbox"
+                    checked={interest.selected}
+                    onChange={() => this.handleCheckInterest(interest._id)}
+                  />
+                  {interest.name}
+                </label>
               </div>
             ))}
           </div>

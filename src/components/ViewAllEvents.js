@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
-import { createOrUpdateItem, getAllItems } from '../Helpers';
+import { createOrUpdateItem, getAllItems, getAllItemsAsObject } from '../Helpers';
 
 export default class ViewAllEvents extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export default class ViewAllEvents extends Component {
       events: [],
       allEvents: [],
       activeFilter: 'All',
-      groups: [],
+      groupsObj: {},
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleFilter = this.handleFilter.bind(this);
@@ -20,9 +20,9 @@ export default class ViewAllEvents extends Component {
   async componentDidMount() {
     try {
       const events = await getAllItems('events');
-      const groups = await getAllItems('groups');
+      const groupsObj = await getAllItemsAsObject('groups');
       this.setState({
-        events, allEvents: events, groups,
+        events, allEvents: events, groupsObj,
       });
     } catch (error) {
       // console.log('error: ', error);
@@ -58,7 +58,7 @@ export default class ViewAllEvents extends Component {
 
   render() {
     const {
-      events, allEvents, activeFilter, groups,
+      events, allEvents, activeFilter, groupsObj,
     } = this.state;
 
     if (allEvents.length === 0) {
@@ -74,9 +74,14 @@ export default class ViewAllEvents extends Component {
           {(events.some((event) => event.status.isFlagged)) && <h4>Reason for flagging </h4>}
         </div>
         <div>
-          {groups.map((group) => events.map((event) => (
-            <EventRow key={event._id} event={event} handleClick={this.handleClick} group={group} />
-          )))}
+          {events.map((event) => (
+            <EventRow
+              key={event._id}
+              event={event}
+              handleClick={this.handleClick}
+              groupsObj={groupsObj}
+            />
+          ))}
           {events.length === 0 && <p>No events found. </p>}
         </div>
       </div>
@@ -84,32 +89,28 @@ export default class ViewAllEvents extends Component {
   }
 }
 
-function EventRow({ event, handleClick, group }) {
+function EventRow({ event, handleClick, groupsObj }) {
   const rowHeight = { height: '5rem' };
   return (
-    <div>
-      {event.group === group._id && (
-        <tr style={rowHeight}>
-          <td style={{ width: '15rem', paddingRight: '10px' }}>
-            <Link to={`/admin/events/${event._id}`}>
-              {event.name}
-            </Link>
-          </td>
-          <td style={{ width: '14rem' }}>
-            {group.name}
-          </td>
-          <td>
-            <FlagItemRowButtons item={event} collection="events" handleClick={handleClick} />
-          </td>
-          <td style={{ width: '10rem' }}>
-            {event.status.isFlagged && (
-            <div className="overflowEllipsis">
-              {event.status.reason}
-            </div>
-            )}
-          </td>
-        </tr>
-      )}
+    <div style={rowHeight}>
+      <div style={{ width: '15rem', paddingRight: '10px' }}>
+        <Link to={`/admin/events/${event._id}`}>
+          {event.name}
+        </Link>
+      </div>
+      <div style={{ width: '14rem' }}>
+        {groupsObj[event.group].name}
+      </div>
+      <div>
+        <FlagItemRowButtons item={event} collection="events" handleClick={handleClick} />
+      </div>
+      <div style={{ width: '10rem' }}>
+        {event.status.isFlagged && (
+        <div className="overflowEllipsis">
+          {event.status.reason}
+        </div>
+        )}
+      </div>
     </div>
   );
 }
