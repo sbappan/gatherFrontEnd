@@ -13,6 +13,7 @@ import FlagGroup from './components/FlagGroup';
 import ViewProfile from './components/ViewProfile';
 import ViewAllUsers from './components/ViewAllUsers';
 import ViewUser from './components/ViewUser';
+import CreateGroup from './components/CreateGroup';
 import './App.css';
 
 function App() {
@@ -26,9 +27,10 @@ function App() {
             <Route exact path="/admin/groups" component={ViewAllGroups} />
             <Route path="/admin/groups/flag/:_id" component={FlagGroup} />
             <Route path="/admin/groups/:_id" component={ViewGroup} />
-            <Route path="/users/:_id" component={ViewProfile} />
             <Route exact path="/admin/users" component={ViewAllUsers} />
             <Route path="/admin/users/:_id" component={ViewUser} />
+            <Route path="/users/:_id" component={ViewProfile} />
+            <Route exact path="/groups/create" component={CreateGroup} />
           </Switch>
         </main>
         <Footer />

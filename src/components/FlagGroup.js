@@ -17,8 +17,8 @@ class FlagGroup extends Component {
 
   async componentDidMount() {
     try {
-      const { match } = this.props;
-      const groupId = match.params._id;
+      // nested destructuring with _id renamed as groupId
+      const { match: { params: { _id: groupId } } } = this.props;
       const group = await getOneItem('groups', groupId);
       this.setState({ group, reason: group.status.reason, isFlagged: group.status.isFlagged });
     } catch (error) {
@@ -42,7 +42,7 @@ class FlagGroup extends Component {
     };
 
     if (reason.trim() || !flag) {
-      const updatedData = await createOrUpdateItem('PUT', 'groups', groupId, bodyData);
+      const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, groupId);
       if (updatedData.length > 0) {
         this.setState(bodyData.status);
       }
