@@ -12,6 +12,7 @@ import ViewGroup from './components/ViewGroup';
 import FlagGroup from './components/FlagGroup';
 import ViewProfile from './components/ViewProfile';
 import ViewAllUsers from './components/ViewAllUsers';
+import FlagUser from './components/FlagUser';
 import ViewUser from './components/ViewUser';
 import ViewAllEvents from './components/ViewAllEvents';
 import FlagEvent from './components/FlagEvent';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/admin/groups/flag/:_id" component={FlagGroup} />
             <Route path="/admin/groups/:_id" component={ViewGroup} />
             <Route exact path="/admin/users" component={ViewAllUsers} />
+            <Route path="/admin/users/flag/:_id" component={FlagUser} />
             <Route path="/admin/users/:_id" component={ViewUser} />
             <Route exact path="/admin/events" component={ViewAllEvents} />
             <Route path="/admin/events/flag/:_id" component={FlagEvent} />
