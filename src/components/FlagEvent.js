@@ -10,7 +10,7 @@ class FlagEvent extends Component {
       event: {},
       reason: '',
       isFlagged: false,
-      groups: [],
+      group: {},
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -20,10 +20,10 @@ class FlagEvent extends Component {
     try {
       const { match: { params: { _id: eventId } } } = this.props;
       const event = await getOneItem('events', eventId);
-      const groups = await getOneItem('groups', event.group);
+      const group = await getOneItem('groups', event.group);
 
       this.setState({
-        event, reason: event.status.reason, isFlagged: event.status.isFlagged, groups,
+        event, reason: event.status.reason, isFlagged: event.status.isFlagged, group,
       });
     } catch (error) {
       // console.log('error: ', error);
@@ -57,14 +57,14 @@ class FlagEvent extends Component {
 
   render() {
     const {
-      event, reason, isFlagged, groups,
+      event, reason, isFlagged, group,
     } = this.state;
 
     return (
       <div className="flagItem">
         <h2>Flag Event</h2>
         <h3>Group:</h3>
-        <p>{groups.name}</p>
+        <p>{group.name}</p>
         <h3>Event Name:</h3>
         <p>{event.name}</p>
         <h3>Event Description:</h3>
