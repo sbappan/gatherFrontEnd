@@ -14,6 +14,7 @@ import ViewProfile from './components/ViewProfile';
 import ViewAllUsers from './components/ViewAllUsers';
 import ViewUser from './components/ViewUser';
 import ViewAllEvents from './components/ViewAllEvents';
+import ViewEvent from './components/ViewEvent';
 import FlagEvent from './components/FlagEvent';
 import CreateGroup from './components/CreateGroup';
 import './App.css';
@@ -34,6 +35,8 @@ function App() {
             <Route path="/admin/users/:_id" component={ViewUser} />
             <Route exact path="/admin/events" component={ViewAllEvents} />
             <Route path="/admin/events/flag/:_id" component={FlagEvent} />
+            <Route exact path="/admin/events/:_id" component={ViewEvent} />
+
 
             <Route path="/users/:_id" component={ViewProfile} />
             <Route exact path="/groups/create" component={CreateGroup} />
