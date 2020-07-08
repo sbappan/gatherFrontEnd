@@ -82,7 +82,12 @@ function UserRow({ user, handleClick }) {
     <div>
       <div>
         <Link to={`/admin/users/${user._id}`}>
+          {user.fname}
+          {' '}
+          {user.lname}
+          {' ('}
           {user.userName}
+          {') '}
         </Link>
         <FlagItemRowButtons item={user} collection="users" handleClick={handleClick} />
       </div>
