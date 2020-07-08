@@ -60,7 +60,7 @@ class ViewEvent extends Component {
         </div>
 
         <div>
-          <p><b>Date:</b></p>
+          <p><b>Date and Time:</b></p>
           <p>{new Date(event.date).toLocaleString('en-CA', { timeZone: 'UTC' })}</p>
 
           <p><b>Location:</b></p>
