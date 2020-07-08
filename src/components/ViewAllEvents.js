@@ -99,7 +99,9 @@ function EventRow({ event, handleClick, groupsObj }) {
         </Link>
       </div>
       <div style={{ width: '14rem' }}>
-        {groupsObj[event.group].name}
+        <Link to={`/admin/groups/${event.group}`}>
+          {groupsObj[event.group].name}
+        </Link>
       </div>
       <div>
         <FlagItemRowButtons item={event} collection="events" handleClick={handleClick} />
