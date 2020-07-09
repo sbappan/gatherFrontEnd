@@ -23,7 +23,7 @@ export async function getOneItem(collection, itemId) {
  * @param {array} arr - input array to be made into an object
  * @param {string} key - the key to be used for the nested objects
  */
-export function convertArrayToObject(arr, key) {
+export function convertArrayToObject(arr, key = '_id') {
   const obj = {};
   arr.forEach((item) => {
     obj[item[key]] = item;
