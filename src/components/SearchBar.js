@@ -66,9 +66,10 @@ export default class SearchBar extends Component {
 
   handleChange(e) {
     const { name, value } = e.target;
+    const searchStr = value.trim();
     const { groups, events, interests } = this.state;
-    const fGroups = !value ? groups : getFilteredItems(groups, value.trim(), interests);
-    const fEvents = !value ? events : getFilteredItems(events, value.trim());
+    const fGroups = searchStr === '' ? groups : getFilteredItems(groups, searchStr, interests);
+    const fEvents = searchStr === '' ? events : getFilteredItems(events, searchStr);
     this.setState({
       [name]: value,
       filteredGroups: fGroups,
@@ -89,7 +90,7 @@ export default class SearchBar extends Component {
           onChange={this.handleChange}
           style={{ width: '100%', margin: '1rem 0', height: '3.25rem' }}
         />
-        {searchString && (
+        {searchString.trim() && (
           <div className="searchResults">
             {filteredGroups.map((group) => <SearchResult key={group._id} item={group} itemType="group" />)}
             {filteredEvents.map((event) => <SearchResult key={event._id} item={event} itemType="event" />)}
