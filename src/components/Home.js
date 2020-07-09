@@ -49,7 +49,9 @@ export default class Home extends Component {
         <h1>Hi Full Name. Welcome to the Gather admin dashboard.</h1>
         {/* Once the log in use case is completed,
           enable loading this dashboard only for super admins */}
-        <AdminDashboard countObj={countObj} />
+        {(Object.keys(countObj).length > 0)
+          ? <AdminDashboard countObj={countObj} />
+          : <h3>Loading...</h3>}
         {/* Once the log in use case is completed,
           enable loading UserDashboard for all other users */}
         {(Object.keys(search).length > 0) && <SearchBar search={search} />}
