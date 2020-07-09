@@ -1,56 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { getAllItems, capitalizeFirstLetter } from '../Helpers';
+import { capitalizeFirstLetter } from '../Helpers';
 
-export default class AdminDashboard extends Component {
-  constructor(props) {
-    super(props);
+export default function AdminDashboard(props) {
+  const { countObj } = props;
+  const countArr = Object.entries(countObj);
+  const style = {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: '4rem',
+  };
 
-    this.state = {
-      countObj: {},
-    };
-  }
-
-  async componentDidMount() {
-    try {
-      const users = await getAllItems('users');
-      const groups = await getAllItems('groups');
-      const events = await getAllItems('events');
-      const interests = await getAllItems('interests');
-      const countObj = {
-        users: users.length,
-        groups: groups.length,
-        events: events.length,
-        interests: interests.length,
-      };
-      this.setState({ countObj });
-    } catch (error) {
-      // console.log('error: ', error);
-    }
-  }
-
-  render() {
-    const { countObj } = this.state;
-    const countArr = Object.entries(countObj);
-    const style = {
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      marginTop: '4rem',
-    };
-
-    return (
-      <div>
-        <div style={style}>
-          {countArr && countArr.map((elem) => (
-            <div key={elem[0]}>
-              <CountBox collection={elem[0]} count={elem[1]} />
-            </div>
-          ))}
-        </div>
+  return (
+    <div>
+      <div style={style}>
+        {countArr && countArr.map((elem) => (
+          <div key={elem[0]}>
+            <CountBox collection={elem[0]} count={elem[1]} />
+          </div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 function CountBox({ collection, count }) {
