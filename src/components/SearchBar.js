@@ -110,7 +110,7 @@ function SearchResult({ item, itemType }) {
   const linkStyle = { textDecoration: 'none', color: '#222' };
 
   return (
-    <Link to={`/admin/${itemType}s/${item._id}`} style={linkStyle}>
+    <Link to={`/${itemType}s/${item._id}`} style={linkStyle}>
       <div style={divStyle}>
         <p>
           {`[${capitalizeFirstLetter(itemType)}] - ${item.name}`}

@@ -10,6 +10,7 @@ class ViewGroupDetails extends Component {
       group: {},
       events: [],
       usersObj: {},
+      interestsObj: {},
       active: 'description',
     };
     this.handleClick = this.handleClick.bind(this);
@@ -24,7 +25,10 @@ class ViewGroupDetails extends Component {
       const res2 = await fetch(`${process.env.REACT_APP_API_LINK}/events/group/${groupId}`);
       const events = await res2.json();
       const usersObj = await getAllItemsAsObject('users');
-      this.setState({ group, events, usersObj });
+      const interestsObj = await getAllItemsAsObject('interests');
+      this.setState({
+        group, events, usersObj, interestsObj,
+      });
     } catch (error) {
       /* console.log('error: ', error); */
     }
@@ -44,7 +48,7 @@ class ViewGroupDetails extends Component {
 
   render() {
     const {
-      group, usersObj, events, active,
+      group, usersObj, events, active, interestsObj,
     } = this.state;
     return (
       <div>
@@ -73,13 +77,24 @@ class ViewGroupDetails extends Component {
             </p>
           ))}
         </span>
+        <div>
+          <h4>Interests</h4>
+          {group.interests && group.interests.map((interest) => (
+            <p key={interest}>
+              {interestsObj[interest].name}
+            </p>
+          ))}
+        </div>
         <br />
         <br />
         <br />
-        <button type="button" id="description" variant="light" className="safe" onClick={(e) => this.handleClick(e)}>Description</button>
-        <button id="members" type="button" variant="light" className="safe" onClick={(e) => this.handleClick(e)}>Members</button>
-        <button id="events" type="button" variant="light" className="safe" onClick={(e) => this.handleClick(e)}>Events</button>
-        <button id="feed" type="button" variant="light" className="safe" onClick={(e) => this.handleClick(e)}>Feed</button>
+        <button type="button" id="description" variant="light" className={active === 'description' ? 'success' : 'safe'} onClick={(e) => this.handleClick(e)}>Description</button>
+
+        <button id="members" type="button" variant="light" className={active === 'members' ? 'success' : 'safe'} onClick={(e) => this.handleClick(e)}>Members</button>
+
+        <button id="events" type="button" variant="light" className={active === 'events' ? 'success' : 'safe'} onClick={(e) => this.handleClick(e)}>Events</button>
+
+        <button id="feed" type="button" variant="light" className={active === 'feed' ? 'success' : 'safe'} onClick={(e) => this.handleClick(e)}>Feed</button>
 
         <div>
           {active === 'description' && <DescriptionTab description={group.description} />}
