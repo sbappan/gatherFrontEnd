@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
-import { getAllItems, createOrUpdateItem } from '../Helpers';
+import { getAllItems, createOrUpdateItem, updateAllItemsArray } from '../Helpers';
 
 export default class ViewAllUsers extends Component {
   constructor(props) {
@@ -26,7 +26,7 @@ export default class ViewAllUsers extends Component {
   }
 
   async handleClick(userId) {
-    const { activeFilter } = this.state;
+    const { activeFilter, allUsers } = this.state;
     const bodyData = {
       status: {
         isFlagged: false,
@@ -35,8 +35,9 @@ export default class ViewAllUsers extends Component {
     };
 
     const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, userId);
-    if (updatedData.length > 0) {
-      this.setState({ allUsers: updatedData });
+
+    if (!updatedData.errorMsg) {
+      this.setState({ allUsers: updateAllItemsArray(allUsers, updatedData) });
       this.handleFilter(activeFilter);
     }
   }

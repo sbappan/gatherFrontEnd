@@ -42,8 +42,8 @@ export default class FlagUser extends Component {
 
     if (reason.trim() || !flag) {
       const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, userId);
-      if (updatedData.length > 0) {
-        this.setState(bodyData.status);
+      if (!updatedData.errorMsg) {
+        this.setState(updatedData.status);
       }
     } else {
       this.setState({ reason: '' });

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getOneItem } from '../Helpers';
 import { LinkButtonAdmin } from './Buttons';
 import ViewProfile from './ViewProfile';
+import Emoji from './Emoji';
 
 export default class ViewUser extends Component {
   constructor(props) {
@@ -50,23 +51,27 @@ export default class ViewUser extends Component {
         <>
           <p>
             <b>Message Updates: </b>
-            {user.emailUpdates.messageUpdates ? 'On' : 'Off'}
+            <EmailUpdateStatus status={user.emailUpdates.messageUpdates} />
           </p>
           <p>
             <b>New Group Updates: </b>
-            {user.emailUpdates.newGroupUpdates ? 'On' : 'Off'}
+            <EmailUpdateStatus status={user.emailUpdates.newGroupUpdates} />
           </p>
           <p>
             <b>New Event Updates: </b>
-            {user.emailUpdates.newEventUpdates ? 'On' : 'Off'}
+            <EmailUpdateStatus status={user.emailUpdates.newEventUpdates} />
           </p>
           <p>
             <b>Reply Updates: </b>
-            {user.emailUpdates.replyUpdates ? 'On' : 'Off'}
+            <EmailUpdateStatus status={user.emailUpdates.replyUpdates} />
           </p>
         </>
         )}
       </div>
     );
   }
+}
+
+function EmailUpdateStatus({ status }) {
+  return status ? <Emoji symbol="&#x2705;" label="On" /> : <Emoji symbol="&#x274C;" label="Off" />;
 }

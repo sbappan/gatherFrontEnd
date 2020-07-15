@@ -78,6 +78,20 @@ export async function createOrUpdateItem(method, collection, bodyData, itemId = 
   return data;
 }
 
+// Updates/Replaces a specific object in an array and returns the new array
+export function updateAllItemsArray(allItems, updatedData) {
+  const updatedElemIndex = allItems.findIndex((elem) => elem._id === updatedData._id);
+  const newAllItems = [...allItems];
+  newAllItems[updatedElemIndex] = updatedData;
+  return newAllItems;
+}
+
+// Returns the all the events for the supplied group id
+export async function getGroupEvents(groupId) {
+  const data = await fetch(`${process.env.REACT_APP_API_LINK}/events/group/${groupId}`);
+  return data.json();
+}
+
 /**
  * Function returns the input string argument with the first letter capitalized
  * @param {string} str
