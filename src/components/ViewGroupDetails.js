@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getOneItem, getAllItemsAsObject } from '../Helpers';
+import { getOneItem, getAllItemsAsObject, getGroupEvents } from '../Helpers';
 
 class ViewGroupDetails extends Component {
   constructor(props) {
@@ -20,10 +20,8 @@ class ViewGroupDetails extends Component {
     try {
       const { match } = this.props;
       const groupId = match.params._id;
-      // const res = await fetch(`${process.env.REACT_APP_API_LINK}/groups/${groupId}`);
       const group = await getOneItem('groups', groupId);
-      const res2 = await fetch(`${process.env.REACT_APP_API_LINK}/events/group/${groupId}`);
-      const events = await res2.json();
+      const events = await getGroupEvents(groupId);
       const usersObj = await getAllItemsAsObject('users');
       const interestsObj = await getAllItemsAsObject('interests');
       this.setState({

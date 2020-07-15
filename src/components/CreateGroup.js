@@ -12,6 +12,7 @@ export default class CreateGroup extends Component {
       interests: [],
       allInterests: [],
       redirectToReferrer: false,
+      serverError: '',
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -69,14 +70,17 @@ export default class CreateGroup extends Component {
       },
     };
     const updatedData = await createOrUpdateItem('POST', 'groups', bodyData);
-    if (updatedData.insertedCount === 1) {
+
+    if (!updatedData.errors) {
       this.setState({ redirectToReferrer: true });
+    } else {
+      this.setState({ serverError: 'Please make sure the form is complete.' });
     }
   }
 
   render() {
     const {
-      allInterests, name, description, redirectToReferrer,
+      allInterests, name, description, redirectToReferrer, serverError,
     } = this.state;
     if (redirectToReferrer === true) {
       return <Redirect to="/" />;
@@ -131,6 +135,7 @@ export default class CreateGroup extends Component {
               </div>
             ))}
           </div>
+          <p style={{ color: 'red' }}>{serverError}</p>
           <button type="button" className="safe" onClick={() => this.handleClick()}>Submit</button>
         </form>
       </>
