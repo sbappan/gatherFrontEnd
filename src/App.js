@@ -21,7 +21,7 @@ import FlagEvent from './components/FlagEvent';
 import CreateGroup from './components/CreateGroup';
 import ViewGroupDetails from './components/ViewGroupDetails';
 import ViewEventDetails from './components/ViewEventDetails';
-
+import CreateEventReviewPage from './components/CreateEventReviewPage';
 
 function App() {
   return (
@@ -46,8 +46,11 @@ function App() {
             <Route path="/admin/events/:_id" component={ViewEvent} />
 
             <Route path="/groups/:_id" component={ViewGroupDetails} />
+
             <Route path="/events/:_id" component={ViewEventDetails} />
             <Route path="/users/:_id" component={ViewProfile} />
+            <Route path="/event/review/:_id" component={CreateEventReviewPage} />
+
           </Switch>
         </main>
         <Footer />
