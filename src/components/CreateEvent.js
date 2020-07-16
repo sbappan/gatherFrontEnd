@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-dom';
+import { Redirect } from 'react-router-dom';
 import DatePicker from 'react-datepicker'; // https://reactdatepicker.com/
 import 'react-datepicker/dist/react-datepicker.css';
-import { createOrUpdateItem /* , getOneItem */ } from '../Helpers';
+import { createOrUpdateItem } from '../Helpers';
+// import { createOrUpdateItem /* , getOneItem */ } from '../Helpers';
 
 export default class CreateEvent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      // group: {},
       name: '',
       description: '',
       group: '',
+      // group: {},
       date: new Date(),
       location: {},
       redirectToReferrer: false,
@@ -27,7 +28,7 @@ export default class CreateEvent extends Component {
   async componentDidMount() {
     try {
       /* const group = await getOneItem('groups', event.group);
-      No way to tell what group this event is being created for (I think) */
+       ***** No way to tell what group this event is being created for (I think) */
       /* const allInterests = interests.map((interest) => ({
         selected: false,
         ...interest,
@@ -43,11 +44,11 @@ export default class CreateEvent extends Component {
     this.setState({ [name]: value });
   }
 
-  handleDateChange = (newDate) => {
+  handleDateChange(newDate) {
     this.setState({
       date: newDate,
     });
-  };
+  }
 
   async handleClick() {
     const { name, description, group, date, location } = this.state;
@@ -55,16 +56,22 @@ export default class CreateEvent extends Component {
     const bodyData = {
       name,
       description,
-      group,
-      date,
+      group: '123',
+      date: date.toISOString(),
       attendees: [],
       reviews: [],
-      location,
+      location: {
+        line1: '123',
+        city: 'Toronto',
+        postalCode: 'M3J 0E4',
+        province: 'ON',
+      },
       status: {
         isFlagged: false,
         reason: '',
       },
     };
+    console.log(bodyData.date);
     const updatedData = await createOrUpdateItem('POST', 'events', bodyData);
 
     if (!updatedData.errors) {
@@ -105,12 +112,14 @@ export default class CreateEvent extends Component {
             onChange={this.handleChange}
             required
           />
-          <h4>Date & Time</h4>
+          <h4>Day and Time</h4>
           <DatePicker
-            selected={date}
+            selected={this.state.date}
             onChange={this.handleDateChange}
             showTimeSelect
+            minDate={new Date()}
             dateFormat="Pp"
+            required
           />
           <h4>Description</h4>
           <textarea
