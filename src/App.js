@@ -22,6 +22,8 @@ import CreateGroup from './components/CreateGroup';
 import ViewGroupDetails from './components/ViewGroupDetails';
 import ViewEventDetails from './components/ViewEventDetails';
 import CreateEventReviewPage from './components/CreateEventReviewPage';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
             <Route exact path="/admin/users" component={ViewAllUsers} />
             <Route exact path="/admin/events" component={ViewAllEvents} />
             <Route exact path="/groups/create" component={CreateGroup} />
+            <Route exact path="/signup" component={SignUp} />
+            <Route exact path="/login" component={Login} />
 
             <Route path="/admin/groups/flag/:_id" component={FlagGroup} />
             <Route path="/admin/groups/:_id" component={ViewGroup} />
@@ -49,8 +53,7 @@ function App() {
 
             <Route path="/events/:_id" component={ViewEventDetails} />
             <Route path="/users/:_id" component={ViewProfile} />
-            <Route path="/event/review/:_id" component={CreateEventReviewPage} />
-
+            <Route path="/events/review/:_id" component={CreateEventReviewPage} />
           </Switch>
         </main>
         <Footer />
