@@ -8,6 +8,9 @@ export default function UserDashboard() {
       <Link to="/groups/create">
         <button type="button" className="safe">Create Group</button>
       </Link>
+      <Link to="/events/create">
+        <button type="button" className="safe">Create Event</button>
+      </Link>
     </div>
   );
 }
