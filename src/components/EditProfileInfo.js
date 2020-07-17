@@ -43,6 +43,7 @@ class EditProfileInfo extends Component {
 
   async handleClick(userId) {
     const { email } = this.state;
+    console.log(email);
     const bodyData = {
       email,
     };
@@ -50,6 +51,7 @@ class EditProfileInfo extends Component {
     const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, userId);
     if (updatedData.length > 0) {
       this.setState(bodyData.email);
+      console.log(bodyData.email);
     }
   }
 

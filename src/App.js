@@ -21,6 +21,7 @@ import FlagEvent from './components/FlagEvent';
 import CreateGroup from './components/CreateGroup';
 import ViewGroupDetails from './components/ViewGroupDetails';
 import ViewEventDetails from './components/ViewEventDetails';
+import EditProfileInfo from './components/EditProfileInfo';
 
 
 function App() {
@@ -48,6 +49,8 @@ function App() {
             <Route path="/groups/:_id" component={ViewGroupDetails} />
             <Route path="/events/:_id" component={ViewEventDetails} />
             <Route path="/users/:_id" component={ViewProfile} />
+
+            <Route path="/test/:_id" component={EditProfileInfo} />
           </Switch>
         </main>
         <Footer />
