@@ -100,6 +100,11 @@ class ViewGroupDetails extends Component {
           {active === 'events' && <EventsTab events={events} />}
           {active === 'feed' && <UserFeedTab />}
         </div>
+        <div>
+          <Link to={`/events/create/${group._id}`}>
+            <button type="button" className="safe" collection="groups">Create Event</button>
+          </Link>
+        </div>
       </div>
     );
   }

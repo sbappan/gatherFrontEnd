@@ -36,7 +36,7 @@ function App() {
             <Route exact path="/admin/users" component={ViewAllUsers} />
             <Route exact path="/admin/events" component={ViewAllEvents} />
             <Route exact path="/groups/create" component={CreateGroup} />
-            <Route exact path="/events/create" component={CreateEvent} />
+            <Route path="/events/create/:_id" component={CreateEvent} />
 
             <Route path="/admin/groups/flag/:_id" component={FlagGroup} />
             <Route path="/admin/groups/:_id" component={ViewGroup} />
