@@ -43,8 +43,8 @@ class FlagGroup extends Component {
 
     if (reason.trim() || !flag) {
       const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, groupId);
-      if (updatedData.length > 0) {
-        this.setState(bodyData.status);
+      if (!updatedData.errorMsg) {
+        this.setState(updatedData.status);
       }
     } else {
       this.setState({ reason: '' });

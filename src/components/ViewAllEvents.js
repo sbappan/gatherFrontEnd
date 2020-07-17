@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
-import { createOrUpdateItem, getAllItems, getAllItemsAsObject } from '../Helpers';
+import {
+  createOrUpdateItem, getAllItems, getAllItemsAsObject, updateAllItemsArray,
+} from '../Helpers';
 
 export default class ViewAllEvents extends Component {
   constructor(props) {
@@ -30,7 +32,7 @@ export default class ViewAllEvents extends Component {
   }
 
   async handleClick(eventId) {
-    const { activeFilter } = this.state;
+    const { activeFilter, allEvents } = this.state;
     const bodyData = {
       status: {
         isFlagged: false,
@@ -39,8 +41,9 @@ export default class ViewAllEvents extends Component {
     };
 
     const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eventId);
-    if (updatedData.length > 0) {
-      this.setState({ allEvents: updatedData });
+
+    if (!updatedData.errorMsg) {
+      this.setState({ allEvents: updateAllItemsArray(allEvents, updatedData) });
       this.handleFilter(activeFilter);
     }
   }

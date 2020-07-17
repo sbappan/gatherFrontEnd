@@ -23,6 +23,7 @@ import ViewGroupDetails from './components/ViewGroupDetails';
 import ViewEventDetails from './components/ViewEventDetails';
 import EditProfileInfo from './components/EditProfileInfo';
 
+import CreateEventReviewPage from './components/CreateEventReviewPage';
 
 function App() {
   return (
@@ -33,9 +34,9 @@ function App() {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/admin/groups" component={ViewAllGroups} />
-            <Route exact path="/groups/create" component={CreateGroup} />
             <Route exact path="/admin/users" component={ViewAllUsers} />
             <Route exact path="/admin/events" component={ViewAllEvents} />
+            <Route exact path="/groups/create" component={CreateGroup} />
 
             <Route path="/admin/groups/flag/:_id" component={FlagGroup} />
             <Route path="/admin/groups/:_id" component={ViewGroup} />
@@ -47,10 +48,14 @@ function App() {
             <Route path="/admin/events/:_id" component={ViewEvent} />
 
             <Route path="/groups/:_id" component={ViewGroupDetails} />
+
             <Route path="/events/:_id" component={ViewEventDetails} />
             <Route path="/users/:_id" component={ViewProfile} />
 
+            <Route path="/event/review/:_id" component={CreateEventReviewPage} />
+
             <Route path="/test/:_id" component={EditProfileInfo} />
+
           </Switch>
         </main>
         <Footer />
