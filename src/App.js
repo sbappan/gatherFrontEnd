@@ -21,9 +21,8 @@ import FlagEvent from './components/FlagEvent';
 import CreateGroup from './components/CreateGroup';
 import ViewGroupDetails from './components/ViewGroupDetails';
 import ViewEventDetails from './components/ViewEventDetails';
-import EditProfileInfo from './components/EditProfileInfo';
-
 import CreateEventReviewPage from './components/CreateEventReviewPage';
+import EditProfileInfo from './components/EditProfileInfo';
 
 function App() {
   return (
@@ -54,7 +53,7 @@ function App() {
 
             <Route path="/event/review/:_id" component={CreateEventReviewPage} />
 
-            <Route path="/test/:_id" component={EditProfileInfo} />
+            <Route path="/edit/user/:_id" component={EditProfileInfo} />
 
           </Switch>
         </main>
