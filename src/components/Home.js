@@ -1,18 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import AdminDashboard from './AdminDashboard';
 import UserDashboard from './UserDashboard';
 import SearchBar from './SearchBar';
 import { getAllItems } from '../Helpers';
+import { AuthContext } from '../context/AuthContext';
 
-export default class Home extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      countObj: {},
-      search: {},
-    };
-  }
+const Home = () => {
+  const [countObj, setCountObj] = useState();
+  const [search, setSearch] = useState();
 
   async componentDidMount() {
     try {
@@ -43,6 +38,7 @@ export default class Home extends Component {
   }
 
   render() {
+    // const authContext = useContext(AuthContext);
     const { search, countObj } = this.state;
     return (
       <>

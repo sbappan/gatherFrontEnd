@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
 } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import './App.css';
+import { AuthProvider, AuthContext } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
@@ -25,36 +27,103 @@ import CreateEventReviewPage from './components/CreateEventReviewPage';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 
+const AuthenticatedRoute = ({ children }) => {
+  const authContext = useContext(AuthContext);
+  return (
+    <Route
+      render={() => (authContext.isAuthenticated() ? (
+        <>
+          { children }
+        </>
+      ) : (
+        <Redirect to="/login" />
+      ))}
+    />
+  );
+};
+
+const AdminRoute = ({ children }) => {
+  const authContext = useContext(AuthContext);
+  return (
+    <Route render={() => (authContext.isAuthenticated() && authContext.isAdmin() ? (
+      <>
+        { children }
+      </>
+    ) : (
+      <Redirect to="/" />
+    ))}
+    />
+  );
+};
+
+const AppRoutes = () => (
+  <Switch>
+    <Route exact path="/signup" component={SignUp} />
+    <Route exact path="/login" component={Login} />
+
+    <AuthenticatedRoute exact path="/">
+      <Home />
+    </AuthenticatedRoute>
+    <AdminRoute exact path="/admin/groups">
+      <ViewAllGroups />
+    </AdminRoute>
+    <AdminRoute exact path="/admin/users">
+      <ViewAllUsers />
+    </AdminRoute>
+    <AdminRoute exact path="/admin/events">
+      <ViewAllEvents />
+    </AdminRoute>
+
+    <AuthenticatedRoute exact path="/groups/create">
+      <CreateGroup />
+    </AuthenticatedRoute>
+
+    <AuthenticatedRoute path="/admin/groups/flag/:_id">
+      <FlagGroup />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/admin/groups/:_id">
+      <ViewGroup />
+    </AuthenticatedRoute>
+
+    <AuthenticatedRoute path="/admin/users/flag/:_id">
+      <FlagUser />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/admin/users/:_id">
+      <ViewUser />
+    </AuthenticatedRoute>
+
+    <AuthenticatedRoute path="/admin/events/flag/:_id">
+      <FlagEvent />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/admin/events/:_id">
+      <ViewEvent />
+    </AuthenticatedRoute>
+
+    <AuthenticatedRoute path="/groups/:_id">
+      <ViewGroupDetails />
+    </AuthenticatedRoute>
+
+    <AuthenticatedRoute path="/events/:_id">
+      <ViewEventDetails />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/users/:_id">
+      <ViewProfile />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/events/review/:_id">
+      <CreateEventReviewPage />
+    </AuthenticatedRoute>
+  </Switch>
+);
+
 function App() {
   return (
     <Router>
       <div className="App">
         <Header />
         <main>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/admin/groups" component={ViewAllGroups} />
-            <Route exact path="/admin/users" component={ViewAllUsers} />
-            <Route exact path="/admin/events" component={ViewAllEvents} />
-            <Route exact path="/groups/create" component={CreateGroup} />
-            <Route exact path="/signup" component={SignUp} />
-            <Route exact path="/login" component={Login} />
-
-            <Route path="/admin/groups/flag/:_id" component={FlagGroup} />
-            <Route path="/admin/groups/:_id" component={ViewGroup} />
-
-            <Route path="/admin/users/flag/:_id" component={FlagUser} />
-            <Route path="/admin/users/:_id" component={ViewUser} />
-
-            <Route path="/admin/events/flag/:_id" component={FlagEvent} />
-            <Route path="/admin/events/:_id" component={ViewEvent} />
-
-            <Route path="/groups/:_id" component={ViewGroupDetails} />
-
-            <Route path="/events/:_id" component={ViewEventDetails} />
-            <Route path="/users/:_id" component={ViewProfile} />
-            <Route path="/events/review/:_id" component={CreateEventReviewPage} />
-          </Switch>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
         </main>
         <Footer />
       </div>
