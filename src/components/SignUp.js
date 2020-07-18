@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 import { getAllItems } from '../Helpers';
 
 export default class SignUp extends Component {
@@ -18,6 +19,8 @@ export default class SignUp extends Component {
       newGroupUpdates: false,
       newEventUpdates: false,
       replyUpdates: false,
+      successfulSignup: false,
+      redirectOnSignup: false,
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -112,11 +115,12 @@ export default class SignUp extends Component {
       .catch((error) => error);
 
     console.log('updatedData: ', updatedData);
-    // if (!updatedData.errors) {
-    //   // this.setState({ redirectToReferrer: true });
-    // } else {
-    //   // this.setState({ serverError: 'Please make sure the form is complete.' });
-    // }
+    if (updatedData._id) {
+      this.setState({ successfulSignup: true });
+      setTimeout(() => {
+        this.setState({ redirectOnSignup: true });
+      }, 1200);
+    }
   }
 
   render() {
@@ -132,6 +136,8 @@ export default class SignUp extends Component {
       newGroupUpdates,
       newEventUpdates,
       replyUpdates,
+      successfulSignup,
+      redirectOnSignup,
     } = this.state;
 
     const interestStyle = {
@@ -146,128 +152,136 @@ export default class SignUp extends Component {
     const formStyle = {
       width: '80%',
     };
+    if (redirectOnSignup === true) {
+      return <Redirect to="/" />;
+    }
     return (
       <>
-        <h2>Sign Up</h2>
-        <form action="" method="post" style={formStyle}>
-          <h4>Username</h4>
-          <input
-            type="text"
-            name="userName"
-            placeholder="Username"
-            value={userName}
-            onChange={this.handleChange}
-            required
-          />
-          <h4>Email</h4>
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={this.handleChange}
-            required
-          />
-          <h4>First Name</h4>
-          <input
-            type="text"
-            name="fname"
-            placeholder="First name"
-            value={fname}
-            onChange={this.handleChange}
-            required
-          />
-          <h4>Last Name</h4>
-          <input
-            type="text"
-            name="lname"
-            placeholder="Last name"
-            value={lname}
-            onChange={this.handleChange}
-            required
-          />
-          <h4>Password</h4>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={this.handleChange}
-            required
-          />
-          <h4>Confirm Password</h4>
-          <input
-            type="password"
-            name="password2"
-            placeholder="Confirm Password"
-            value={password2}
-            onChange={this.handleChange}
-            required
-          />
-          <h4>Interests</h4>
-          <div style={interestFieldSetStyle}>
-            {allInterests.map((interest) => (
-              <div key={interest._id} style={interestStyle}>
-                <label htmlFor={`${interest.name}-id`}>
+        {successfulSignup ? <h2 style={{ color: '#8de48d' }}>Account created. Please login now.</h2>
+          : (
+            <>
+              <h2>Sign Up</h2>
+              <form action="" method="post" style={formStyle}>
+                <h4>Username</h4>
+                <input
+                  type="text"
+                  name="userName"
+                  placeholder="Username"
+                  value={userName}
+                  onChange={this.handleChange}
+                  required
+                />
+                <h4>Email</h4>
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={this.handleChange}
+                  required
+                />
+                <h4>First Name</h4>
+                <input
+                  type="text"
+                  name="fname"
+                  placeholder="First name"
+                  value={fname}
+                  onChange={this.handleChange}
+                  required
+                />
+                <h4>Last Name</h4>
+                <input
+                  type="text"
+                  name="lname"
+                  placeholder="Last name"
+                  value={lname}
+                  onChange={this.handleChange}
+                  required
+                />
+                <h4>Password</h4>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={this.handleChange}
+                  required
+                />
+                <h4>Confirm Password</h4>
+                <input
+                  type="password"
+                  name="password2"
+                  placeholder="Confirm Password"
+                  value={password2}
+                  onChange={this.handleChange}
+                  required
+                />
+                <h4>Interests</h4>
+                <div style={interestFieldSetStyle}>
+                  {allInterests.map((interest) => (
+                    <div key={interest._id} style={interestStyle}>
+                      <label htmlFor={`${interest.name}-id`}>
+                        <input
+                          id={`${interest.name}-id`}
+                          type="checkbox"
+                          checked={interest.selected}
+                          onChange={() => this.handleCheckInterest(interest._id)}
+                        />
+                        {interest.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                <h4>Email Updates</h4>
+                <label htmlFor="messageUpdates">
                   <input
-                    id={`${interest.name}-id`}
+                    id="messageUpdates"
+                    name="messageUpdates"
                     type="checkbox"
-                    checked={interest.selected}
-                    onChange={() => this.handleCheckInterest(interest._id)}
+                    checked={messageUpdates}
+                    onChange={this.handleEmailUpdateChange}
                   />
-                  {interest.name}
+                  Message updates
                 </label>
-              </div>
-            ))}
-          </div>
-          <h4>Email Updates</h4>
-          <label htmlFor="messageUpdates">
-            <input
-              id="messageUpdates"
-              name="messageUpdates"
-              type="checkbox"
-              checked={messageUpdates}
-              onChange={this.handleEmailUpdateChange}
-            />
-            Message updates
-          </label>
-          <br />
-          <label htmlFor="newGroupUpdates">
-            <input
-              id="newGroupUpdates"
-              name="newGroupUpdates"
-              type="checkbox"
-              checked={newGroupUpdates}
-              onChange={this.handleEmailUpdateChange}
-            />
-            New group updates
-          </label>
-          <br />
-          <label htmlFor="newEventUpdates">
-            <input
-              id="newEventUpdates"
-              name="newEventUpdates"
-              type="checkbox"
-              checked={newEventUpdates}
-              onChange={this.handleEmailUpdateChange}
-            />
-            New event updates
-          </label>
-          <br />
-          <label htmlFor="replyUpdates">
-            <input
-              id="replyUpdates"
-              name="replyUpdates"
-              type="checkbox"
-              checked={replyUpdates}
-              onChange={this.handleEmailUpdateChange}
-            />
-            Reply updates
-          </label>
-          <br />
-          <br />
-          <button type="button" className="safe" onClick={() => this.handleClick()}>Submit</button>
-        </form>
+                <br />
+                <label htmlFor="newGroupUpdates">
+                  <input
+                    id="newGroupUpdates"
+                    name="newGroupUpdates"
+                    type="checkbox"
+                    checked={newGroupUpdates}
+                    onChange={this.handleEmailUpdateChange}
+                  />
+                  New group updates
+                </label>
+                <br />
+                <label htmlFor="newEventUpdates">
+                  <input
+                    id="newEventUpdates"
+                    name="newEventUpdates"
+                    type="checkbox"
+                    checked={newEventUpdates}
+                    onChange={this.handleEmailUpdateChange}
+                  />
+                  New event updates
+                </label>
+                <br />
+                <label htmlFor="replyUpdates">
+                  <input
+                    id="replyUpdates"
+                    name="replyUpdates"
+                    type="checkbox"
+                    checked={replyUpdates}
+                    onChange={this.handleEmailUpdateChange}
+                  />
+                  Reply updates
+                </label>
+                <br />
+                <br />
+                <button type="button" className="safe" onClick={() => this.handleClick()}>Submit</button>
+              </form>
+            </>
+          )}
       </>
     );
   }

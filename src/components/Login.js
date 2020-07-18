@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import { AuthContext } from '../context/AuthContext';
 import { getOneItem } from '../Helpers';
@@ -72,6 +73,9 @@ const Login = () => {
         <br />
         <input className="safe" type="submit" value="Submit" />
       </form>
+      <Link to="/signup" style={{ color: '#111', textDecoration: 'none', marginTop: '1rem' }}>
+        <h3>Create Account</h3>
+      </Link>
     </>
   );
 };

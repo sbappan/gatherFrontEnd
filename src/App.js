@@ -119,13 +119,13 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Header />
-        <main>
-          <AuthProvider>
+        <AuthProvider>
+          <Header />
+          <main>
             <AppRoutes />
-          </AuthProvider>
-        </main>
-        <Footer />
+          </main>
+          <Footer />
+        </AuthProvider>
       </div>
     </Router>
   );
