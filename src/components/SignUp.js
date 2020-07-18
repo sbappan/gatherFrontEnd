@@ -114,7 +114,6 @@ export default class SignUp extends Component {
       .then((_data) => _data)
       .catch((error) => error);
 
-    console.log('updatedData: ', updatedData);
     if (updatedData._id) {
       this.setState({ successfulSignup: true });
       setTimeout(() => {

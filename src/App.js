@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext } from 'react';
 import {
   BrowserRouter as Router,
@@ -27,10 +28,11 @@ import CreateEventReviewPage from './components/CreateEventReviewPage';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 
-const AuthenticatedRoute = ({ children }) => {
+const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
   return (
     <Route
+      {...rest}
       render={() => (authContext.isAuthenticated() ? (
         <>
           { children }
@@ -42,16 +44,18 @@ const AuthenticatedRoute = ({ children }) => {
   );
 };
 
-const AdminRoute = ({ children }) => {
+const AdminRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
   return (
-    <Route render={() => (authContext.isAuthenticated() && authContext.isAdmin() ? (
-      <>
-        { children }
-      </>
-    ) : (
-      <Redirect to="/" />
-    ))}
+    <Route
+      {...rest}
+      render={() => (authContext.isAuthenticated() && authContext.isAdmin() ? (
+        <>
+          { children }
+        </>
+      ) : (
+        <Redirect to="/" />
+      ))}
     />
   );
 };
@@ -78,26 +82,26 @@ const AppRoutes = () => (
       <CreateGroup />
     </AuthenticatedRoute>
 
-    <AuthenticatedRoute path="/admin/groups/flag/:_id">
+    <AdminRoute path="/admin/groups/flag/:_id">
       <FlagGroup />
-    </AuthenticatedRoute>
-    <AuthenticatedRoute path="/admin/groups/:_id">
+    </AdminRoute>
+    <AdminRoute path="/admin/groups/:_id">
       <ViewGroup />
-    </AuthenticatedRoute>
+    </AdminRoute>
 
-    <AuthenticatedRoute path="/admin/users/flag/:_id">
+    <AdminRoute path="/admin/users/flag/:_id">
       <FlagUser />
-    </AuthenticatedRoute>
-    <AuthenticatedRoute path="/admin/users/:_id">
+    </AdminRoute>
+    <AdminRoute path="/admin/users/:_id">
       <ViewUser />
-    </AuthenticatedRoute>
+    </AdminRoute>
 
-    <AuthenticatedRoute path="/admin/events/flag/:_id">
+    <AdminRoute path="/admin/events/flag/:_id">
       <FlagEvent />
-    </AuthenticatedRoute>
-    <AuthenticatedRoute path="/admin/events/:_id">
+    </AdminRoute>
+    <AdminRoute path="/admin/events/:_id">
       <ViewEvent />
-    </AuthenticatedRoute>
+    </AdminRoute>
 
     <AuthenticatedRoute path="/groups/:_id">
       <ViewGroupDetails />
