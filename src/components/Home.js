@@ -43,7 +43,7 @@ const Home = () => {
         ? (
           <>
             {authContext.isAdmin() && <AdminDashboard countObj={countObj} />}
-            <SearchBar search={search} />
+            {(Object.keys(search).length > 0) && <SearchBar search={search} />}
             <UserDashboard />
           </>
         )
