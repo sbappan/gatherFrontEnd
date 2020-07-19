@@ -51,7 +51,17 @@ export default class CreateEvent extends Component {
   }
 
   async handleClick() {
-    const { name, description, group, date, location } = this.state;
+    const {
+      name,
+      description,
+      group,
+      date,
+      line1,
+      line2,
+      city,
+      postalCode,
+      province,
+    } = this.state;
 
     const bodyData = {
       name,
@@ -60,20 +70,20 @@ export default class CreateEvent extends Component {
       date: date.toISOString(),
       attendees: [],
       reviews: [],
-      location,
-      /* location: {
-        line1: '123',
-        city: 'Toronto',
-        postalCode: 'M3J 0E4',
-        province: 'ON',
-      }, */
+      location: {
+        line1,
+        line2,
+        city,
+        postalCode,
+        province,
+      },
       status: {
         isFlagged: false,
         reason: '',
+        updatedBy: '5ece7afcb840c08079e5ea18',
       },
     };
-    // console.log(bodyData.group);
-    // console.log(bodyData.date); // --------
+
     const updatedData = await createOrUpdateItem('POST', 'events', bodyData);
 
     if (!updatedData.errors) {
@@ -91,7 +101,9 @@ export default class CreateEvent extends Component {
       description,
       date,
       group,
-      location,
+      location: {
+        line1, line2, city, postalCode,
+      },
       redirectToReferrer,
       serverError,
     } = this.state;
@@ -139,7 +151,7 @@ export default class CreateEvent extends Component {
             type="text"
             name="line1"
             placeholder="Street Address"
-            value={location.line1}
+            value={line1}
             onChange={this.handleChange}
             required
           />
@@ -147,8 +159,8 @@ export default class CreateEvent extends Component {
           <input
             type="text"
             name="line2"
-            placeholder="Appartment, suite, unit, building, flor, etc."
-            value={location.line2}
+            placeholder="Appartment, suite, unit, building, floor, etc."
+            value={line2}
             onChange={this.handleChange}
           />
           <h4>City</h4>
@@ -156,18 +168,18 @@ export default class CreateEvent extends Component {
             type="text"
             name="city"
             placeholder="City"
-            value={location.city}
+            value={city}
             onChange={this.handleChange}
             required
           />
           <h4>Province or Territoire</h4>
           <select
-            type="text"
+            type="select"
             name="province"
-            value={location.province}
             onChange={this.handleChange}
             required
           >
+            <option value="">-</option>
             <option value="ON">Ontario</option>
             <option value="AB">Alberta</option>
             <option value="BC">British Columbia</option>
@@ -187,7 +199,7 @@ export default class CreateEvent extends Component {
             type="text"
             name="postalCode"
             placeholder="Postal Code"
-            value={location.postalCode}
+            value={postalCode}
             onChange={this.handleChange}
             required
           />
