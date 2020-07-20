@@ -1,91 +1,101 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { FlagItemButtons } from './Buttons';
 import { createOrUpdateItem, getOneItem } from '../Helpers';
+import { AuthContext } from '../context/AuthContext';
 
-class FlagEvent extends Component {
-  constructor(props) {
-    super(props);
+const FlagEvent = () => {
+  const authContext = useContext(AuthContext);
+  const { authState } = authContext;
+  const { _id: eventId } = useParams();
+  const [event, setEvent] = useState({});
+  const [group, setGroup] = useState({});
+  const [user, setUser] = useState({});
+  const [reason, setReason] = useState('');
+  const [isFlagged, setIsFlagged] = useState(false);
 
-    this.state = {
-      event: {},
-      reason: '',
-      isFlagged: false,
-      group: {},
+  useEffect(() => {
+    const getEvent = async () => {
+      const eventData = await getOneItem('events', eventId);
+      setEvent(eventData);
+      setReason(eventData.status.reason);
+      setIsFlagged(eventData.status.isFlagged);
     };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
+    getEvent();
+  }, [eventId]);
 
-  async componentDidMount() {
-    try {
-      const { match: { params: { _id: eventId } } } = this.props;
-      const event = await getOneItem('events', eventId);
-      const group = await getOneItem('groups', event.group);
-
-      this.setState({
-        event, reason: event.status.reason, isFlagged: event.status.isFlagged, group,
-      });
-    } catch (error) {
-      // console.log('error: ', error);
+  useEffect(() => {
+    const getGroup = async () => {
+      const groupData = await getOneItem('groups', event.group);
+      setGroup(groupData);
+    };
+    if (event.group) {
+      getGroup();
     }
-  }
+  }, [event.group]);
 
-  handleChange(event) {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
+  useEffect(() => {
+    const getUser = async () => {
+      const userData = await getOneItem('users', event.status.updatedBy);
+      setUser(userData);
+    };
 
-  async handleClick(eventId, flag) {
-    let { reason } = this.state;
-    reason = flag ? reason : '';
+    if (event.status && event.status.updatedBy) {
+      getUser();
+    }
+  }, [event.status]);
+
+  const handleClick = async (eId, flag) => {
+    const reasonText = flag ? reason.trim() : '';
     const bodyData = {
       status: {
         isFlagged: flag,
-        reason,
+        reason: reasonText,
+        updatedBy: authState.userInfo._id,
       },
     };
 
-    if (reason.trim() || !flag) {
-      const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eventId);
+    if (reasonText !== event.status.reason) {
+      if (reasonText || !flag) {
+        const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eId);
 
-      if (!updatedData.errorMsg) {
-        this.setState(updatedData.status);
+        if (!updatedData.errorMsg) {
+          setReason(updatedData.status.reason);
+          setIsFlagged(updatedData.status.isFlagged);
+          setEvent(updatedData);
+        }
+      } else {
+        setReason('');
       }
-    } else {
-      this.setState({ reason: '' });
     }
-  }
+  };
 
-  render() {
-    const {
-      event, reason, isFlagged, group,
-    } = this.state;
-
-    return (
-      <div className="flagItem">
-        <h2>Flag Event</h2>
-        <h3>Group:</h3>
-        <p>{group.name}</p>
-        <h3>Event Name:</h3>
-        <p>{event.name}</p>
-        <h3>Event Description:</h3>
-        <p>{event.description}</p>
-        <h3>Event status:</h3>
-        <p>{isFlagged ? 'Flagged' : 'Not flagged'}</p>
-        <h3>Reason:</h3>
-        <textarea
-          name="reason"
-          placeholder="Please enter the reason for flagging the event"
-          value={reason}
-          onChange={this.handleChange}
-          required
-        />
-        <br />
-        <br />
-        <FlagItemButtons item={event} isFlagged={isFlagged} collection="events" handleClick={this.handleClick} />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="flagItem">
+      <h2>Flag Event</h2>
+      <h3>Event Name:</h3>
+      <p>{event.name}</p>
+      <h3>Group:</h3>
+      <p>{group.name}</p>
+      <h3>Event Description:</h3>
+      <p>{event.description}</p>
+      <h3>Event status:</h3>
+      <p>{isFlagged ? 'Flagged' : 'Not flagged'}</p>
+      <h3>Last updated by:</h3>
+      <p>{user._id && `${user.fname} ${user.lname}`}</p>
+      <h3>Reason:</h3>
+      <textarea
+        name="reason"
+        placeholder="Please enter the reason for flagging the event"
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        required
+      />
+      <br />
+      <br />
+      <FlagItemButtons item={event} isFlagged={isFlagged} collection="events" handleClick={handleClick} />
+    </div>
+  );
+};
 
 export default FlagEvent;
