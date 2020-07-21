@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  getOneItem, getAllItemsAsObject, getAssociatedItems, createOrUpdateItem, getAllItems,
+  getOneItem, getAssociatedItems, createOrUpdateItem, getAllItems,
 } from '../Helpers';
 import profile from '../stockProfileImage.jpg';
 
@@ -12,14 +12,12 @@ class EditProfileInfo extends Component {
       user: {},
       events: [],
       groups: [],
-      interestsObj: {},
       fname: '',
       lname: '',
       userName: '',
       email: '',
 
       allInterests: [],
-      interests: [],
       errors: {
         fnameError: '',
         lnameError: '',
@@ -38,18 +36,18 @@ class EditProfileInfo extends Component {
       const { match, itemId } = this.props;
       const userId = itemId || match.params._id;
       const user = await getOneItem('users', userId);
-      const interestsObj = await getAllItemsAsObject('interests');
       const events = await getAssociatedItems('events', user._id);
       const groups = await getAssociatedItems('groups', user._id);
 
-
       const interests = await getAllItems('interests');
-      const allInterests = interests.map((interest) => ({ ...interest }));
+      const allInterests = interests.map((interest) => ({
+        selected: user.interests.includes(interest._id),
+        ...interest,
+      }));
 
       this.setState({
         user,
         events,
-        interestsObj,
         groups,
         fname: user.fname,
         lname: user.lname,
@@ -90,8 +88,11 @@ class EditProfileInfo extends Component {
 
   async handleSubmit() {
     const {
-      user, email, fname, lname, userName, interests,
+      user, email, fname, lname, userName, allInterests,
     } = this.state;
+    // filter for selected interests and store the id of the selected interests in the array
+    const interests = allInterests.filter((i) => i.selected).map((i) => i._id);
+
     const bodyData = {
       fname,
       lname,
@@ -99,8 +100,6 @@ class EditProfileInfo extends Component {
       email,
       interests,
     };
-
-    console.log(interests);
 
     if (this.validate()) {
       const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, user._id);
@@ -121,11 +120,9 @@ class EditProfileInfo extends Component {
         }
         return interest;
       });
-      // filter for selected interests and store the id of the selected interests in the array
-      const interests = updatedInterests.filter((i) => i.selected).map((i) => i._id);
+
       return {
         allInterests: updatedInterests,
-        interests,
       };
     });
   }
@@ -133,9 +130,19 @@ class EditProfileInfo extends Component {
 
   render() {
     const {
-      user, events, interestsObj, groups, fname, lname, email, userName, allInterests, errors,
+      user, events, groups, fname, lname, email, userName, allInterests, errors,
     } = this.state;
     const profileStyle = { width: '10rem', height: 'auto' };
+    const interestStyle = {
+      display: 'flex',
+      alignItems: 'baseline',
+    };
+    const interestFieldSetStyle = {
+      marginTop: '.5rem',
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(10rem, 1fr))',
+      width: '60%',
+    };
 
     return (
       <form action="" method="PUT">
@@ -148,7 +155,7 @@ class EditProfileInfo extends Component {
 
         <img src={profile} alt="Profile" style={profileStyle} />
 
-        <p>
+        <div>
           <strong>First Name: </strong>
           <input
             name="fname"
@@ -157,10 +164,10 @@ class EditProfileInfo extends Component {
             required
           />
           <p style={{ color: 'red' }}>{errors.fnameError}</p>
-        </p>
+        </div>
 
 
-        <p>
+        <div>
           <strong>Last Name: </strong>
           <input
             name="lname"
@@ -169,9 +176,9 @@ class EditProfileInfo extends Component {
             required
           />
           <p style={{ color: 'red' }}>{errors.lnameError}</p>
-        </p>
+        </div>
 
-        <p>
+        <div>
           <strong>Username: </strong>
           <input
             name="userName"
@@ -180,9 +187,9 @@ class EditProfileInfo extends Component {
             required
           />
           <p style={{ color: 'red' }}>{errors.userNameError}</p>
-        </p>
+        </div>
 
-        <p>
+        <div>
           <strong>Email: </strong>
           <input
             name="email"
@@ -191,46 +198,24 @@ class EditProfileInfo extends Component {
             required
           />
           <p style={{ color: 'red' }}>{errors.emailError}</p>
-        </p>
+        </div>
 
         <h4>Interests</h4>
-        <ul>
-          {/* {user.interests && user.interests.map((interest) => (
-            <div key={interest._id}>
-              <label htmlFor={`${interestsObj[interest].name}-id`}>
+        <div style={interestFieldSetStyle}>
+          {allInterests.map((interest) => (
+            <div key={interest._id} style={interestStyle}>
+              <label htmlFor={`${interest.name}-id`}>
                 <input
-                  id={`${interestsObj[interest].name}-id`}
+                  id={`${interest.name}-id`}
                   type="checkbox"
-                  defaultChecked
                   checked={interest.selected}
                   onChange={() => this.handleCheckInterest(interest._id)}
                 />
-                {interestsObj[interest].name}
+                {interest.name}
               </label>
             </div>
-
-          ))} */}
-
-          {/* </ul> */}
-          {user.interests && user.interests.length === 0 && 'None'}
-
-          <div>
-            {allInterests.map((interest) => (
-              <div key={interest._id}>
-                <label htmlFor={`${interest.name}-id`}>
-                  <input
-                    id={`${interest.name}-id`}
-                    type="checkbox"
-                    checked={interest.selected}
-                    onChange={() => this.handleCheckInterest(interest._id)}
-                  />
-                  {interest.name}
-                </label>
-              </div>
-            ))}
-          </div>
-
-        </ul>
+          ))}
+        </div>
 
         <h4>Groups</h4>
         <ul>

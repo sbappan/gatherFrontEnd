@@ -53,7 +53,7 @@ function App() {
 
             <Route path="/event/review/:_id" component={CreateEventReviewPage} />
 
-            <Route path="/edit/user/:_id" component={EditProfileInfo} />
+            <Route path="/edit/users/:_id" component={EditProfileInfo} />
 
           </Switch>
         </main>
