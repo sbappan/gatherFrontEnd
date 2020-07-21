@@ -107,14 +107,14 @@ const AppRoutes = () => (
       <ViewGroupDetails />
     </AuthenticatedRoute>
 
+    <AuthenticatedRoute path="/events/review/:_id">
+      <CreateEventReviewPage />
+    </AuthenticatedRoute>
     <AuthenticatedRoute path="/events/:_id">
       <ViewEventDetails />
     </AuthenticatedRoute>
     <AuthenticatedRoute path="/users/:_id">
       <ViewProfile />
-    </AuthenticatedRoute>
-    <AuthenticatedRoute path="/events/review/:_id">
-      <CreateEventReviewPage />
     </AuthenticatedRoute>
   </Switch>
 );
