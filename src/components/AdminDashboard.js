@@ -9,11 +9,11 @@ export default function AdminDashboard(props) {
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginTop: '4rem',
   };
 
   return (
     <div>
+      <h3 style={{ margin: '3rem 0 2rem' }}>Admin Dashboard</h3>
       <div style={style}>
         {countArr && countArr.map((elem) => (
           <div key={elem[0]}>
@@ -34,6 +34,7 @@ function CountBox({ collection, count }) {
     alignItems: 'center',
     padding: '2rem',
     borderRadius: '1rem',
+    backgroundColor: '#b7d7e8',
   };
   const pStyle = {
     fontSize: '3rem',

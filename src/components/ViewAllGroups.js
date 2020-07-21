@@ -1,82 +1,78 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { FlagItemRowButtons, FilterItemsButtons } from './Buttons';
 import { createOrUpdateItem, getAllItems, updateAllItemsArray } from '../Helpers';
+import { AuthContext } from '../context/AuthContext';
 
-export default class ViewAllGroups extends Component {
-  constructor(props) {
-    super(props);
+const ViewAllGroups = () => {
+  const authContext = useContext(AuthContext);
+  const { authState } = authContext;
 
-    this.state = {
-      groups: [],
-      allGroups: [],
-      activeFilter: 'All',
+  const [groups, setGroups] = useState([]);
+  const [allGroups, setAllGroups] = useState([]);
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  useEffect(() => {
+    const getData = async () => {
+      const groupsData = await getAllItems('groups');
+      setGroups(groupsData);
+      setAllGroups(groupsData);
     };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleFilter = this.handleFilter.bind(this);
-  }
+    getData();
+  }, []);
 
-  async componentDidMount() {
-    try {
-      const groups = await getAllItems('groups');
-      this.setState({ groups, allGroups: groups });
-    } catch (error) {
-      // console.log('error: ', error);
+  useEffect(() => {
+    let filteredGroups = [];
+    if (activeFilter === 'All') {
+      filteredGroups = allGroups;
+    } else {
+      const condition = activeFilter === 'Flagged';
+      filteredGroups = allGroups.filter((group) => group.status.isFlagged === condition);
     }
-  }
+    setGroups(filteredGroups);
+  }, [activeFilter, allGroups]);
 
-  async handleClick(groupId) {
-    const { activeFilter, allGroups } = this.state;
+  const handleFilter = (text) => {
+    setActiveFilter(text);
+  };
+
+  const handleClick = async (groupId) => {
     const bodyData = {
       status: {
         isFlagged: false,
         reason: '',
+        updatedBy: authState.userInfo._id,
       },
     };
 
     const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, groupId);
 
-    if (!updatedData.errorMsg) {
-      this.setState({ allGroups: updateAllItemsArray(allGroups, updatedData) });
-      this.handleFilter(activeFilter);
+    if (updatedData._id) {
+      setAllGroups(updateAllItemsArray(allGroups, updatedData));
+      handleFilter(activeFilter);
     }
+  };
+
+  if (allGroups.length === 0) {
+    return <h3>Loading....</h3>;
   }
 
-  handleFilter(text) {
-    const { allGroups } = this.state;
-    if (text === 'All') {
-      this.setState({ groups: allGroups, activeFilter: text });
-    } else {
-      const condition = text === 'Flagged';
-      const filteredGroups = allGroups.filter((group) => group.status.isFlagged === condition);
-      this.setState({ groups: filteredGroups, activeFilter: text });
-    }
-  }
-
-  render() {
-    const { groups, allGroups, activeFilter } = this.state;
-
-    if (allGroups.length === 0) {
-      return <h3>Loading....</h3>;
-    }
-
-    return (
-      <div className="allItemsList">
-        <div>
-          <h2>Groups</h2>
-          <FilterItemsButtons handleFilter={this.handleFilter} activeFilter={activeFilter} />
-          {(groups.some((group) => group.status.isFlagged)) && <h4>Reason for flagging </h4>}
-        </div>
-        <div>
-          {groups.map((group) => (
-            <GroupRow key={group._id} group={group} handleClick={this.handleClick} />
-          ))}
-          {groups.length === 0 && <p>No groups found. Please modify the filter option.</p>}
-        </div>
+  return (
+    <div className="allItemsList">
+      <div>
+        <h2>Groups</h2>
+        <FilterItemsButtons handleFilter={handleFilter} activeFilter={activeFilter} />
+        {(groups.some((group) => group.status.isFlagged)) && <h4>Reason for flagging </h4>}
       </div>
-    );
-  }
-}
+      <div>
+        {groups.map((group) => (
+          <GroupRow key={group._id} group={group} handleClick={handleClick} />
+        ))}
+        {groups.length === 0 && <p>No groups found. Please modify the filter option.</p>}
+      </div>
+    </div>
+  );
+};
 
 function GroupRow({ group, handleClick }) {
   return (
@@ -97,3 +93,6 @@ function GroupRow({ group, handleClick }) {
     </div>
   );
 }
+
+
+export default ViewAllGroups;
