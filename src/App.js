@@ -26,6 +26,7 @@ import ViewGroupDetails from './components/ViewGroupDetails';
 import CreateEvent from './components/CreateEvent';
 import ViewEventDetails from './components/ViewEventDetails';
 import CreateEventReviewPage from './components/CreateEventReviewPage';
+import EditProfileInfo from './components/EditProfileInfo';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 
@@ -84,6 +85,9 @@ const AppRoutes = () => (
     </AuthenticatedRoute>
     <AuthenticatedRoute exact path="/events/create/:_id">
       <CreateEvent />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/users/edit/:_id">
+        <EditProfileInfo />
     </AuthenticatedRoute>
 
     <AdminRoute path="/admin/groups/flag/:_id">
