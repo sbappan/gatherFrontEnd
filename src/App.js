@@ -23,6 +23,7 @@ import ViewEvent from './components/ViewEvent';
 import FlagEvent from './components/FlagEvent';
 import CreateGroup from './components/CreateGroup';
 import ViewGroupDetails from './components/ViewGroupDetails';
+import CreateEvent from './components/CreateEvent';
 import ViewEventDetails from './components/ViewEventDetails';
 import CreateEventReviewPage from './components/CreateEventReviewPage';
 import SignUp from './components/SignUp';

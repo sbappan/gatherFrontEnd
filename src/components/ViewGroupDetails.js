@@ -71,6 +71,11 @@ const ViewGroupDetails = () => {
           </p>
         ))}
       </div>
+      <div>
+        <Link to={`/events/create/${group._id}`}>
+          <button type="button" className="safe" collection="groups">Create Event</button>
+        </Link>
+      </div>
       <br />
       <br />
       <br />
