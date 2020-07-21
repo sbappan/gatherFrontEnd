@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import DatePicker from 'react-datepicker'; // https://reactdatepicker.com/
 import 'react-datepicker/dist/react-datepicker.css';
-import { createOrUpdateItem } from '../Helpers';
-// import { createOrUpdateItem /* , getOneItem */ } from '../Helpers';
+import { createOrUpdateItem, getOneItem } from '../Helpers';
 
 export default class CreateEvent extends Component {
   constructor(props) {
@@ -12,8 +11,7 @@ export default class CreateEvent extends Component {
     this.state = {
       name: '',
       description: '',
-      group: '',
-      // group: {},
+      group: {},
       date: new Date(),
       location: {},
       redirectToReferrer: false,
@@ -27,13 +25,15 @@ export default class CreateEvent extends Component {
 
   async componentDidMount() {
     try {
-      /* const group = await getOneItem('groups', event.group);
-       ***** No way to tell what group this event is being created for (I think) */
-      /* const allInterests = interests.map((interest) => ({
-        selected: false,
-        ...interest,
-      }));
-      this.setState({ allInterests }); */
+      const {
+        match: {
+          params: { _id: groupId },
+        },
+      } = this.props;
+      const group = await getOneItem('groups', groupId);
+      this.setState({
+        group,
+      });
     } catch (error) {
       // console.log('error: ', error);
     }
@@ -51,27 +51,39 @@ export default class CreateEvent extends Component {
   }
 
   async handleClick() {
-    const { name, description, group, date, location } = this.state;
+    const {
+      name,
+      description,
+      group,
+      date,
+      line1,
+      line2,
+      city,
+      postalCode,
+      province,
+    } = this.state;
 
     const bodyData = {
       name,
       description,
-      group: '123',
+      group: group._id,
       date: date.toISOString(),
       attendees: [],
       reviews: [],
       location: {
-        line1: '123',
-        city: 'Toronto',
-        postalCode: 'M3J 0E4',
-        province: 'ON',
+        line1,
+        line2,
+        city,
+        postalCode,
+        province,
       },
       status: {
         isFlagged: false,
         reason: '',
+        updatedBy: '5ece7afcb840c08079e5ea18',
       },
     };
-    console.log(bodyData.date);
+
     const updatedData = await createOrUpdateItem('POST', 'events', bodyData);
 
     if (!updatedData.errors) {
@@ -88,7 +100,10 @@ export default class CreateEvent extends Component {
       name,
       description,
       date,
-      location,
+      group,
+      location: {
+        line1, line2, city, postalCode,
+      },
       redirectToReferrer,
       serverError,
     } = this.state;
@@ -103,6 +118,8 @@ export default class CreateEvent extends Component {
       <>
         <h2>Create Event</h2>
         <form action="" method="post" style={formStyle}>
+          <h4>Group Name:</h4>
+          <p>{group.name}</p>
           <h4>Name</h4>
           <input
             type="text"
@@ -114,7 +131,7 @@ export default class CreateEvent extends Component {
           />
           <h4>Day and Time</h4>
           <DatePicker
-            selected={this.state.date}
+            selected={date}
             onChange={this.handleDateChange}
             showTimeSelect
             minDate={new Date()}
@@ -126,6 +143,63 @@ export default class CreateEvent extends Component {
             name="description"
             placeholder="Event description"
             value={description}
+            onChange={this.handleChange}
+            required
+          />
+          <h4>Address Line 1</h4>
+          <input
+            type="text"
+            name="line1"
+            placeholder="Street Address"
+            value={line1}
+            onChange={this.handleChange}
+            required
+          />
+          <h4>Address Line 2 (Optional)</h4>
+          <input
+            type="text"
+            name="line2"
+            placeholder="Appartment, suite, unit, building, floor, etc."
+            value={line2}
+            onChange={this.handleChange}
+          />
+          <h4>City</h4>
+          <input
+            type="text"
+            name="city"
+            placeholder="City"
+            value={city}
+            onChange={this.handleChange}
+            required
+          />
+          <h4>Province or Territoire</h4>
+          <select
+            type="select"
+            name="province"
+            onChange={this.handleChange}
+            required
+          >
+            <option value="">-</option>
+            <option value="ON">Ontario</option>
+            <option value="AB">Alberta</option>
+            <option value="BC">British Columbia</option>
+            <option value="MB">Manitoba</option>
+            <option value="NL">Newfoundland and Labrador</option>
+            <option value="NB">New Brunswick</option>
+            <option value="NT">Northwest Territories</option>
+            <option value="NS">Nova Scotia</option>
+            <option value="NU">Nunavut</option>
+            <option value="PE">Prince Edward Island</option>
+            <option value="QC">Quebec</option>
+            <option value="SK">Saskatchewan</option>
+            <option value="YT">Yukon</option>
+          </select>
+          <h4>Postal Code</h4>
+          <input
+            type="text"
+            name="postalCode"
+            placeholder="Postal Code"
+            value={postalCode}
             onChange={this.handleChange}
             required
           />
