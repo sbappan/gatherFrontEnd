@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-
 import { getOneItem, getAllItemsAsObject, getGroupEvents } from '../Helpers';
+import { AuthContext } from '../context/AuthContext';
 
 const ViewGroupDetails = () => {
+  const authContext = useContext(AuthContext);
+  const { authState: { userInfo } } = authContext;
   const [group, setGroup] = useState({});
   const [events, setEvents] = useState([]);
   const [usersObj, setUsersObj] = useState({});
@@ -71,11 +73,15 @@ const ViewGroupDetails = () => {
           </p>
         ))}
       </div>
+      {group.members
+      && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
+      && (
       <div>
         <Link to={`/events/create/${group._id}`}>
           <button type="button" className="safe" collection="groups">Create Event</button>
         </Link>
       </div>
+      )}
       <br />
       <br />
       <br />
@@ -91,12 +97,11 @@ const ViewGroupDetails = () => {
         {activeTab === 'description' && <DescriptionTab description={group.description} />}
         {activeTab === 'members' && <MembersTab members={usersObj} group={group} />}
         {activeTab === 'events' && <EventsTab events={events} />}
-        {activeTab === 'feed' && <UserFeedTab />}
+        {activeTab === 'feed' && <GroupFeedTab />}
       </div>
     </div>
   );
 };
-
 
 function DescriptionTab({ description }) {
   return (
@@ -129,10 +134,10 @@ function EventsTab({ events }) {
   );
 }
 
-function UserFeedTab() {
+function GroupFeedTab() {
   return (
     <>
-      <p>User feed</p>
+      <p>Group feed</p>
     </>
   );
 }
