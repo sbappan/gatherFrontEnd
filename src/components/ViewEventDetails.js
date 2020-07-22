@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import moment from 'moment';
+import { AuthContext } from '../context/AuthContext';
 
 import { getAllItemsAsObject, getOneItem } from '../Helpers';
 
 const ViewEventDetails = () => {
+  const authContext = useContext(AuthContext);
+  const { authState: { userInfo } } = authContext;
   const [event, setEvent] = useState({});
   const [group, setGroup] = useState({});
   const [usersObj, setUsersObj] = useState({});
@@ -63,6 +66,15 @@ const ViewEventDetails = () => {
         {' on '}
         {moment(event.date).format('LLL')}
       </p>
+      {group.members
+      && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
+      && (
+      <div>
+        <Link to={`/events/edit/${event._id}`}>
+          <button type="button" className="success" collection="events">Edit Event</button>
+        </Link>
+      </div>
+      )}
       <div>
         <Link to={`/events/review/${event._id}`}>
           <button type="button" className="success" collection="groups">Review Event</button>
