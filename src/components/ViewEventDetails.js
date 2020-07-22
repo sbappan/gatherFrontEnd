@@ -1,75 +1,87 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+
 import { getAllItemsAsObject, getOneItem } from '../Helpers';
 
+const ViewEventDetails = () => {
+  const [event, setEvent] = useState({});
+  const [group, setGroup] = useState({});
+  const [usersObj, setUsersObj] = useState({});
+  const { _id: eventId } = useParams();
 
-class ViewEventDetails extends Component {
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    const getData = async () => {
+      const eventPromise = getOneItem('events', eventId);
+      const usersObjPromise = getAllItemsAsObject('users');
+      const [eventData, usersObjData] = await Promise.all([eventPromise,
+        usersObjPromise]);
 
-    this.state = {
-      event: {},
-      usersObj: [],
-      group: {},
+      setEvent(eventData);
+      setUsersObj(usersObjData);
 
+      if (event.group) {
+        const groupData = await getOneItem('groups', event.group);
+        setGroup(groupData);
+      }
     };
-  }
+    getData();
+  }, [eventId, event.group]);
 
-  async componentDidMount() {
-    try {
-      const { match } = this.props;
-      const eventId = match.params._id;
-      const event = await getOneItem('events', eventId);
-      const group = await getOneItem('groups', event.group);
-      const usersObj = await getAllItemsAsObject('users');
-      this.setState({ event, usersObj, group });
-    } catch (error) {
-      //
-    }
-  }
+  return (
+    <div>
+      <h1><strong>{event.name}</strong></h1>
+      <h3>
+        Associated Group:
+        {' '}
+        <Link to={`../groups/${group._id}`}>{group.name}</Link>
 
-  render() {
-    const { event, usersObj, group } = this.state;
-    return (
+      </h3>
+      <p>{event.description}</p>
+      <h3>Attendees</h3>
       <div>
-        <h1><strong>{event.name}</strong></h1>
-        <h3>
-          Associated Group:
-          {' '}
-          <Link to={`../groups/${group._id}`}>{group.name}</Link>
-
-        </h3>
-        <p>{event.description}</p>
-        <h3>Attendees</h3>
-        <div>
-          {event.attendees && event.attendees.map((attendee) => (
-            <p key={attendee}>
-              <Link to={`../users/${attendee}`}>
-                {`${usersObj[attendee].fname} ${usersObj[attendee].lname} `}
-              </Link>
-            </p>
-          ))}
-        </div>
-        <p>
-          Being held at:
-          {' '}
-          {event.location && event.location.line1}
-          {', '}
-          {event.location && event.location.line2}
-          {' '}
-          {event.location && event.location.city}
-          {', '}
-          {event.location && event.location.province}
-          {', '}
-          {event.location && event.location.postalCode}
-          {' on '}
-          {moment(event.date).format('LLL')}
-        </p>
+        {event.attendees && event.attendees.map((attendee) => (
+          <p key={attendee}>
+            <Link to={`../users/${attendee}`}>
+              {usersObj[attendee] && `${usersObj[attendee].fname} ${usersObj[attendee].lname} `}
+            </Link>
+          </p>
+        ))}
       </div>
-    );
-  }
-}
-
+      <p>
+        Being held at:
+        {' '}
+        {event.location && event.location.line1}
+        {', '}
+        {event.location && event.location.line2}
+        {' '}
+        {event.location && event.location.city}
+        {', '}
+        {event.location && event.location.province}
+        {', '}
+        {event.location && event.location.postalCode}
+        {' on '}
+        {moment(event.date).format('LLL')}
+      </p>
+      <div>
+        <Link to={`/events/review/${event._id}`}>
+          <button type="button" className="success" collection="groups">Review Event</button>
+        </Link>
+      </div>
+      <div>
+        {event.reviews && event.reviews.map((review) => (
+          <div key={review.createdBy}>
+            <h4>Review</h4>
+            <p>{`Review text: ${review.reviewText}`}</p>
+            <p>{`Rating: ${review.rating}`}</p>
+            <p>
+              {usersObj[review.createdBy] && ` Review by: ${usersObj[review.createdBy].fname} ${usersObj[review.createdBy].lname} `}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default ViewEventDetails;

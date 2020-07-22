@@ -1,53 +1,44 @@
-import React, { Component } from 'react';
-import { getOneItem } from '../Helpers';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import { LinkButtonAdmin } from './Buttons';
 import ViewProfile from './ViewProfile';
 import Emoji from './Emoji';
+import { getOneItem } from '../Helpers';
 
-export default class ViewUser extends Component {
-  constructor(props) {
-    super(props);
+const ViewUser = () => {
+  const [user, setUser] = useState({});
+  const { _id: userId } = useParams();
 
-    this.state = {
-      user: {},
+  useEffect(() => {
+    const getData = async () => {
+      const userData = await getOneItem('users', userId);
+      setUser(userData);
     };
+    getData();
+  }, [userId]);
+
+
+  if (Object.keys(user).length === 0) {
+    return <h3>Loading...</h3>;
   }
 
-  async componentDidMount() {
-    try {
-      const { match: { params: { _id: userId } } } = this.props;
-      const user = await getOneItem('users', userId);
-
-      this.setState({ user });
-    } catch (error) {
-      // console.log('error: ', error);
-    }
-  }
-
-  render() {
-    const { user } = this.state;
-
-    if (Object.keys(user).length === 0) {
-      return <h3>Loading...</h3>;
-    }
-
-    return (
-      <div>
-        <LinkButtonAdmin className="success" text="Back to Users" collection="users" />
-        <ViewProfile itemId={user._id} />
-        {user.status && (
-          <p>
-            <b>Status: </b>
-            {user.status.isFlagged ? 'Flagged' : 'Not flagged'}
-          </p>
-        )}
-        {user.status && user.status.isFlagged && (
-          <p>
-            <b>Reason: </b>
-            {user.status.reason}
-          </p>
-        )}
-        {user.emailUpdates && (
+  return (
+    <div>
+      <LinkButtonAdmin className="success" text="Back to Users" collection="users" />
+      <ViewProfile itemId={user._id} />
+      {user.status && (
+      <p>
+        <b>Status: </b>
+        {user.status.isFlagged ? 'Flagged' : 'Not flagged'}
+      </p>
+      )}
+      {user.status && user.status.isFlagged && (
+      <p>
+        <b>Reason: </b>
+        {user.status.reason}
+      </p>
+      )}
+      {user.emailUpdates && (
         <>
           <p>
             <b>Message Updates: </b>
@@ -66,12 +57,14 @@ export default class ViewUser extends Component {
             <EmailUpdateStatus status={user.emailUpdates.replyUpdates} />
           </p>
         </>
-        )}
-      </div>
-    );
-  }
-}
+      )}
+    </div>
+  );
+};
+
 
 function EmailUpdateStatus({ status }) {
   return status ? <Emoji symbol="&#x2705;" label="On" /> : <Emoji symbol="&#x274C;" label="Off" />;
 }
+
+export default ViewUser;

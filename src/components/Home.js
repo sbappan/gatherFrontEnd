@@ -1,21 +1,18 @@
-import React, { Component } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import AdminDashboard from './AdminDashboard';
 import UserDashboard from './UserDashboard';
 import SearchBar from './SearchBar';
 import { getAllItems } from '../Helpers';
+import { AuthContext } from '../context/AuthContext';
 
-export default class Home extends Component {
-  constructor(props) {
-    super(props);
+const Home = () => {
+  const authContext = useContext(AuthContext);
+  const { authState: { userInfo } } = authContext;
+  const [countObj, setCountObj] = useState({});
+  const [search, setSearch] = useState({});
 
-    this.state = {
-      countObj: {},
-      search: {},
-    };
-  }
-
-  async componentDidMount() {
-    try {
+  useEffect(() => {
+    const getHomePageData = async () => {
       const usersPromise = getAllItems('users');
       const groupsPromise = getAllItems('groups');
       const eventsPromise = getAllItems('events');
@@ -24,39 +21,35 @@ export default class Home extends Component {
         groupsPromise,
         eventsPromise,
         interestsPromise]);
-      const countObj = {
+
+      setCountObj({
         users: users.length,
         groups: groups.length,
         events: events.length,
         interests: interests.length,
-      };
-
-      this.setState({
-        countObj,
-        search: {
-          interests, groups, events,
-        },
       });
-    } catch (error) {
-      // console.log('error: ', error);
-    }
-  }
+      setSearch({
+        interests, groups, events,
+      });
+    };
 
-  render() {
-    const { search, countObj } = this.state;
-    return (
-      <>
-        <h1>Hi Full Name. Welcome to the Gather admin dashboard.</h1>
-        {/* Once the log in use case is completed,
-          enable loading this dashboard only for super admins */}
-        {(Object.keys(countObj).length > 0)
-          ? <AdminDashboard countObj={countObj} />
-          : <h3>Loading...</h3>}
-        {/* Once the log in use case is completed,
-          enable loading UserDashboard for all other users */}
-        {(Object.keys(search).length > 0) && <SearchBar search={search} />}
-        <UserDashboard />
-      </>
-    );
-  }
-}
+    getHomePageData();
+  }, []);
+
+  return (
+    <>
+      <h1>{`Hi ${userInfo.fname} ${userInfo.lname}. Welcome to Gather!`}</h1>
+      {(Object.keys(countObj).length > 0)
+        ? (
+          <>
+            {authContext.isAdmin() && <AdminDashboard countObj={countObj} />}
+            {(Object.keys(search).length > 0) && <SearchBar search={search} />}
+            <UserDashboard />
+          </>
+        )
+        : <h2>Loading...</h2>}
+    </>
+  );
+};
+
+export default Home;
