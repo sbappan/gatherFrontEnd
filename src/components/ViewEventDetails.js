@@ -71,15 +71,10 @@ const ViewEventDetails = () => {
       && (
       <div>
         <Link to={`/events/edit/${event._id}`}>
-          <button type="button" className="success" collection="groups">Edit Event</button>
-        </Link>
-      </div>
-      )}
-      <div>
-        <Link to={`/events/edit/${event._id}`}>
           <button type="button" className="success" collection="events">Edit Event</button>
         </Link>
       </div>
+      )}
       <div>
         <Link to={`/events/review/${event._id}`}>
           <button type="button" className="success" collection="groups">Review Event</button>
