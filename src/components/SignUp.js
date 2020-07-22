@@ -100,8 +100,6 @@ export default class SignUp extends Component {
         replyUpdates,
       },
     };
-    // const updatedData = await createOrUpdateItem('POST', 'groups', bodyData);
-    // /register
 
     const updatedData = await fetch(`${process.env.REACT_APP_API_LINK}/users/register`, {
       method: 'post',
