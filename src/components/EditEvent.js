@@ -31,8 +31,7 @@ const EditEvent = () => {
       setEvent(eventData);
       setEventName(eventData.name);
       setEventDescription(eventData.description);
-      setEventDate(new Date((`${eventData.date.substring(0, 10)} ${eventData.date.substring(12, 16)}`)));
-      // setTempDate(new Date((`${eventData.date.substring(0, 10)} ${eventData.date.substring(12, 16)}`)));
+      setEventDate(new Date((`${moment(eventData.date).format('L')} ${moment(eventData.date).format('HH:mm')}`)));
       setEventLocation(eventData.location);
       setEventAttendees(eventData.attendees);
       setEventReviews(eventData.reviews);
@@ -56,18 +55,14 @@ const EditEvent = () => {
       setUser(userData);
     };
 
-    if (event.status && event.status.updatedBy) {
+    if (event.updatedBy) {
       getUser();
     }
-  }, [event.status]);
+  }, [event.updatedBy]);
 
   const handleDateChange = (newDate) => {
     setEventDate(newDate);
   };
-
-  console.log(moment(date).format('LLL'));
-  console.log(date.toISOString());
-  // Going to bed... https://momentjs.com/docs/#/parsing/string-format/ LLL .. GL
 
   const handleClick = async (eId) => {
     const bodyData = {
@@ -87,27 +82,15 @@ const EditEvent = () => {
       },
     };
 
-    console.log(bodyData.name);
-    console.log(bodyData.description);
-    console.log(bodyData.group);
-    console.log(bodyData.date);
-    console.log(bodyData.createdBy);
-    console.log(bodyData.updatedBy);
-    console.log(bodyData.attendees);
-    console.log(bodyData.reviews);
-    console.log(bodyData.location.line1);
-    console.log(bodyData.location.line2);
-    console.log(bodyData.location.city);
-    console.log(bodyData.location.province);
-    console.log(bodyData.location.postalCode);
-    console.log(bodyData.status.updatedBy);
+    if (bodyData.name && bodyData.description && bodyData.date && bodyData.location.line1
+       && bodyData.location.city && bodyData.location.province && bodyData.location.postalCode) {
+      const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eId);
 
-    const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eId);
-
-    console.log(updatedData.errors);
-
-    if (!updatedData.errors) {
-      setRedirectToReferrer(true);
+      if (!updatedData.errors) {
+        setRedirectToReferrer(true);
+      } else {
+        // console.log(updatedData.errors);
+      }
     } else {
       setServerError('Please make sure the form is complete.');
     }
