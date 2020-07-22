@@ -89,8 +89,9 @@ const AppRoutes = () => (
     </AuthenticatedRoute>
     <AuthenticatedRoute path="/events/edit/:_id">
       <EditEvent />
+    </AuthenticatedRoute>
     <AuthenticatedRoute path="/users/edit/:_id">
-        <EditProfileInfo />
+      <EditProfileInfo />
     </AuthenticatedRoute>
 
     <AdminRoute path="/admin/groups/flag/:_id">
