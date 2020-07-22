@@ -17,7 +17,6 @@ const EditEvent = () => {
   const [name, setEventName] = useState('');
   const [description, setEventDescription] = useState('');
   const [date, setEventDate] = useState(new Date());
-  const [tempDate, setTempDate] = useState('');
   const [location, setEventLocation] = useState({
     line1: '', line2: '', city: '', postalCode: '', province: '',
   });
@@ -32,8 +31,8 @@ const EditEvent = () => {
       setEvent(eventData);
       setEventName(eventData.name);
       setEventDescription(eventData.description);
-      setEventDate(eventData.date);
-      setTempDate((`${eventData.date.substring(0, 10)} ${eventData.date.substring(12, 16)}`));
+      setEventDate(new Date((`${eventData.date.substring(0, 10)} ${eventData.date.substring(12, 16)}`)));
+      // setTempDate(new Date((`${eventData.date.substring(0, 10)} ${eventData.date.substring(12, 16)}`)));
       setEventLocation(eventData.location);
       setEventAttendees(eventData.attendees);
       setEventReviews(eventData.reviews);
@@ -64,17 +63,19 @@ const EditEvent = () => {
 
   const handleDateChange = (newDate) => {
     setEventDate(newDate);
-    setTempDate(newDate);
   };
+
+  console.log(moment(date).format('LLL'));
+  console.log(date.toISOString());
+  // Going to bed... https://momentjs.com/docs/#/parsing/string-format/ LLL .. GL
 
   const handleClick = async (eId) => {
     const bodyData = {
       name,
       description,
       group: group._id,
-      date,
+      date: date.toISOString(),
       createdBy: event.createdBy,
-      // createdBy: userInfo._id,
       updatedBy: userInfo._id,
       attendees,
       reviews,
@@ -139,7 +140,7 @@ const EditEvent = () => {
         />
         <h4>Day and Time</h4>
         <DatePicker
-          selected={tempDate}
+          selected={date}
           onChange={handleDateChange}
           showTimeSelect
           minDate={new Date()}
