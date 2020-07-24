@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
 import { AuthContext } from '../context/AuthContext';
 
-import { getAllItemsAsObject, getOneItem } from '../Helpers';
+import { getAllItemsAsObject, getOneItem, deleteItem } from '../Helpers';
 
 const ViewEventDetails = () => {
   const authContext = useContext(AuthContext);
@@ -12,6 +12,8 @@ const ViewEventDetails = () => {
   const [group, setGroup] = useState({});
   const [usersObj, setUsersObj] = useState({});
   const { _id: eventId } = useParams();
+
+  const [redirectToReferrer, setRedirectToReferrer] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -30,6 +32,20 @@ const ViewEventDetails = () => {
     };
     getData();
   }, [eventId, event.group]);
+
+  const handleDeleteClick = async (eId) => {
+    const updatedData = await deleteItem('events', eId);
+
+    if (!updatedData.errors) {
+      setRedirectToReferrer(true);
+    } else {
+      // console.log(updatedData.errors);
+    }
+  };
+
+  if (redirectToReferrer === true) {
+    return <Redirect to="/admin/events" />;
+  }
 
   return (
     <div>
@@ -73,6 +89,22 @@ const ViewEventDetails = () => {
         <Link to={`/events/edit/${event._id}`}>
           <button type="button" className="success" collection="events">Edit Event</button>
         </Link>
+      </div>
+      )}
+      {group.members
+      && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
+      && (
+      <div>
+        <button
+          type="button"
+          className="danger"
+          collection="events"
+          onClick={() => {
+            if (window.confirm(`   Are you sure you wish to cancel: ${event.name}?\n(Careful, there is no undoing this request!)`)) { handleDeleteClick(event._id); }
+          }}
+        >
+          Cancel Event
+        </button>
       </div>
       )}
       <div>
