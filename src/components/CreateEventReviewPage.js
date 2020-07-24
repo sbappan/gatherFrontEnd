@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Redirect } from 'react-router';
 import { useParams } from 'react-router-dom';
-import ReactRating from 'react-rating';
+import ReactRating from 'react-rating'; // https://www.npmjs.com/package/react-rating
 import { getOneItem, createOrUpdateItem } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
 
