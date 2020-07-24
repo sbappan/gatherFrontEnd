@@ -78,6 +78,17 @@ export async function createOrUpdateItem(method, collection, bodyData, itemId = 
   return data;
 }
 
+// Deletes a specific item
+export async function deleteItem(collection, itemId) {
+  const data = await fetch(`${process.env.REACT_APP_API_LINK}/${collection}/${itemId}`, {
+    method: 'delete',
+  })
+    .then((response) => response.json())
+    .then((_data) => _data)
+    .catch((error) => error);
+  return data;
+}
+
 // Updates/Replaces a specific object in an array and returns the new array
 export function updateAllItemsArray(allItems, updatedData) {
   const updatedElemIndex = allItems.findIndex((elem) => elem._id === updatedData._id);
