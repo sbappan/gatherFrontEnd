@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Redirect } from 'react-router';
 import { useParams } from 'react-router-dom';
+import ReactRating from 'react-rating';
 import { getOneItem, createOrUpdateItem } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
 
@@ -39,6 +40,11 @@ const CreateEventReviewPage = () => {
       }
     }
   }, [event.reviews, authState.userInfo._id]);
+  console.log(rating);
+  const ratingChanged = (newRating) => {
+    console.log(newRating);
+    setRating(newRating);
+  };
 
   const handleSubmit = async () => {
     let bodyData = {};
@@ -89,7 +95,13 @@ const CreateEventReviewPage = () => {
       <br />
       <br />
       <p>Rating</p>
-      <input name="rating" type="number" onChange={(e) => setRating(e.target.value)} value={rating} placeholder="Enter a number between 1 and 5" style={{ width: '270px' }} />
+      <ReactRating
+        name="rating"
+        initialRating={rating}
+        onChange={ratingChanged}
+        fullSymbol={<img src={`${process.env.PUBLIC_URL}/images/Star.png`} alt="Star" height="100px" />}
+        emptySymbol={<img src={`${process.env.PUBLIC_URL}/images/Star_Empty.png`} alt="Star" height="100px" />}
+      />
       <br />
       <br />
       <button type="button" className="safe" onClick={handleSubmit}>Submit</button>
