@@ -3,7 +3,9 @@ import { useParams, Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
 import { AuthContext } from '../context/AuthContext';
 
-import { getAllItemsAsObject, getOneItem, deleteItem } from '../Helpers';
+import {
+  getAllItemsAsObject, getOneItem, deleteItem, createOrUpdateItem,
+} from '../Helpers';
 
 const ViewEventDetails = () => {
   const authContext = useContext(AuthContext);
@@ -12,6 +14,18 @@ const ViewEventDetails = () => {
   const [group, setGroup] = useState({});
   const [usersObj, setUsersObj] = useState({});
   const { _id: eventId } = useParams();
+
+  const [name, setEventName] = useState('');
+  const [description, setEventDescription] = useState('');
+  const [date, setEventDate] = useState(new Date());
+  const [location, setEventLocation] = useState({
+    line1: '', line2: '', city: '', postalCode: '', province: '',
+  });
+  const [attendees, setEventAttendees] = useState([]);
+  const [reviews, setEventReviews] = useState([]);
+  const [createdBy, setEventCreatedBy] = useState('');
+  const [updatedBy, setEventUpdatedBy] = useState('');
+  const [status, setEventStatus] = useState([]);
 
   const [redirectToReferrer, setRedirectToReferrer] = useState(false);
 
@@ -22,8 +36,18 @@ const ViewEventDetails = () => {
       const [eventData, usersObjData] = await Promise.all([eventPromise,
         usersObjPromise]);
 
-      setEvent(eventData);
       setUsersObj(usersObjData);
+
+      setEvent(eventData);
+      setEventName(eventData.name);
+      setEventDescription(eventData.description);
+      setEventDate(eventData.date);
+      setEventLocation(eventData.location);
+      setEventAttendees(eventData.attendees);
+      setEventReviews(eventData.reviews);
+      setEventCreatedBy(eventData.createdBy);
+      setEventUpdatedBy(eventData.updatedData);
+      setEventStatus(eventData.status);
 
       if (event.group) {
         const groupData = await getOneItem('groups', event.group);
@@ -32,6 +56,39 @@ const ViewEventDetails = () => {
     };
     getData();
   }, [eventId, event.group]);
+
+  const handleAttendence = async (eId, newAttendees) => {
+    const bodyData = {
+      name,
+      description,
+      group,
+      date,
+      createdBy,
+      updatedBy,
+      attendees: newAttendees,
+      reviews,
+      location,
+      status,
+    };
+
+    const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eId);
+
+    if (!updatedData.errors) {
+      window.location.reload(false);
+    } else {
+      // console.log(updatedData.errors);
+    }
+  };
+
+  const handleAttendenceClick = async (eId) => {
+    if (attendees.includes(userInfo._id)) {
+      const newAttendees = attendees.filter((uId) => uId !== userInfo._id);
+      handleAttendence(eId, newAttendees);
+    } else {
+      const newAttendees = attendees.concat(userInfo._id);
+      handleAttendence(eId, newAttendees);
+    }
+  };
 
   const handleDeleteClick = async (eId) => {
     const updatedData = await deleteItem('events', eId);
@@ -100,12 +157,45 @@ const ViewEventDetails = () => {
           className="danger"
           collection="events"
           onClick={() => {
-            if (window.confirm(`   Are you sure you wish to cancel: ${event.name}?\n(Careful, there is no undoing this request!)`)) { handleDeleteClick(event._id); }
+            // eslint-disable-next-line no-alert
+            if (window.confirm(`Are you sure you wish to cancel: ${event.name}?\n(Careful, there is no undoing this request!)`)) { handleDeleteClick(event._id); }
           }}
         >
           Cancel Event
         </button>
       </div>
+      )}
+      {group.members
+      && (group.members.includes(userInfo._id)
+      || group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id))
+      && (event.attendees && (event.attendees.includes(userInfo._id)) ? (
+        <div>
+          <button
+            type="button"
+            className="safe"
+            collection="events"
+            onClick={() => {
+            // eslint-disable-next-line no-alert
+              if (window.confirm(`Are you sure you want to cancel your attendence to: ${event.name}?`)) { handleAttendenceClick(event._id); }
+            }}
+          >
+            Attending Event
+          </button>
+        </div>
+      ) : (
+        <div>
+          <button
+            type="button"
+            className="success"
+            collection="events"
+            onClick={() => {
+              handleAttendenceClick(event._id);
+            }}
+          >
+            Attend Event
+          </button>
+        </div>
+      )
       )}
       <div>
         <Link to={`/events/review/${event._id}`}>
