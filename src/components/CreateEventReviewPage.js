@@ -40,9 +40,7 @@ const CreateEventReviewPage = () => {
       }
     }
   }, [event.reviews, authState.userInfo._id]);
-  console.log(rating);
   const ratingChanged = (newRating) => {
-    console.log(newRating);
     setRating(newRating);
   };
 
