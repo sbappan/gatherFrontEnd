@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getOneItem, getAllItemsAsObject, getGroupEvents } from '../Helpers';
+import {
+  getOneItem, getAllItemsAsObject, getGroupEvents, createOrUpdateItem,
+} from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
 
 const ViewGroupDetails = () => {
@@ -39,6 +41,47 @@ const ViewGroupDetails = () => {
 
   const handleChangeTab = (tab) => {
     setActiveTab(tab);
+  };
+
+  const handleJoinClick = async (gId) => {
+    const existingMembers = group.members.filter((m) => m._id);
+    existingMembers.push({
+      _id: userInfo._id,
+      isAdmin: false,
+    });
+
+    const bodyData = {
+      members: existingMembers,
+    };
+
+    const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, gId);
+    if (!updatedData.errors) {
+      window.location.reload(false);
+    } else {
+      // console.log(updatedData.errors);
+    }
+  };
+
+  const handleLeaveClick = async (gId) => {
+    const existingMembers = group.members.filter((m) => m._id);
+
+    existingMembers.map((_id, i) => {
+      if (existingMembers[i]._id === userInfo._id) {
+        existingMembers.splice(i, 1);
+      }
+      return existingMembers;
+    });
+
+    const bodyData = {
+      members: existingMembers,
+    };
+
+    const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, gId);
+    if (!updatedData.errors) {
+      window.location.reload(false);
+    } else {
+      // console.log(updatedData.errors);
+    }
   };
 
   return (
@@ -83,6 +126,13 @@ const ViewGroupDetails = () => {
       </div>
       )}
       <br />
+      {group.members
+      && group.members.filter((m) => m._id).map((m) => m._id).includes(userInfo._id)
+        ? (
+          <button type="button" className="danger" collection="users" onClick={() => handleLeaveClick(group._id)}>Leave Group</button>
+        ) : (
+          <button type="button" className="safe" collection="users" onClick={() => handleJoinClick(group._id)}>Join Group</button>
+        )}
       <br />
       <br />
       <button type="button" id="description" variant="light" className={activeTab === 'description' ? 'success' : 'safe'} onClick={() => handleChangeTab('description')}>Description</button>
