@@ -55,8 +55,8 @@ const ViewGroupDetails = () => {
     };
 
     const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, gId);
-    if (!updatedData.errors) {
-      window.location.reload(false);
+    if (updatedData._id) {
+      setGroup(updatedData);
     } else {
       // console.log(updatedData.errors);
     }
@@ -77,8 +77,8 @@ const ViewGroupDetails = () => {
     };
 
     const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, gId);
-    if (!updatedData.errors) {
-      window.location.reload(false);
+    if (updatedData._id) {
+      setGroup(updatedData);
     } else {
       // console.log(updatedData.errors);
     }
