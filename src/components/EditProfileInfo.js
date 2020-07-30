@@ -1,95 +1,59 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import {
-  getOneItem, getAssociatedItems, createOrUpdateItem, getAllItems,
+  getAssociatedItems, createOrUpdateItem, getAllItems, getOneItem,
 } from '../Helpers';
 import profile from '../stockProfileImage.jpg';
 
-class EditProfileInfo extends Component {
-  constructor(props) {
-    super(props);
+const EditProfileInfo = () => {
+  const authContext = useContext(AuthContext);
+  const {
+    setAuthState, authState: { userInfo, token, expiresAt },
+  } = authContext;
+  const [user, setUser] = useState({});
+  const [events, setEvents] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [allInterests, setAllInterests] = useState([]);
+  const [fname, setFName] = useState(userInfo.fname);
+  const [lname, setLName] = useState(userInfo.lname);
+  const [email, setEmail] = useState(userInfo.email);
+  const [userName, setUserName] = useState(userInfo.userName);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [fnameError, setFNameError] = useState('');
+  const [lnameError, setLNameError] = useState('');
+  const [userNameError, setUserNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
 
-    this.state = {
-      user: {},
-      events: [],
-      groups: [],
-      fname: '',
-      lname: '',
-      userName: '',
-      email: '',
+  useEffect(() => {
+    const getData = async () => {
+      const userData = await getOneItem('users', userInfo._id);
+      setUser(userData);
+      const eventsPromise = getAssociatedItems('events', user._id);
+      const groupsPromise = getAssociatedItems('groups', user._id);
+      const [eventsData, groupsData] = await Promise.all([eventsPromise, groupsPromise]);
+      setEvents(eventsData);
+      setGroups(groupsData);
 
-      allInterests: [],
-      errors: {
-        fnameError: '',
-        lnameError: '',
-        userNameError: '',
-        emailError: '',
-      },
+      if (user._id) {
+        const interests = await getAllItems('interests');
+        const interestsData = interests.map((interest) => ({
+          selected: user.interests.includes(interest._id),
+          ...interest,
+        }));
+        setAllInterests(interestsData);
+      }
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCheckInterest = this.handleCheckInterest.bind(this);
-    this.validate = this.validate.bind(this);
-  }
+    getData();
+  }, [userInfo._id, user._id, user.interests]);
 
-  async componentDidMount() {
-    try {
-      const { match, itemId } = this.props;
-      const userId = itemId || match.params._id;
-      const user = await getOneItem('users', userId);
-      const events = await getAssociatedItems('events', user._id);
-      const groups = await getAssociatedItems('groups', user._id);
+  const setErrors = async () => {
+    setFNameError(!fname ? 'This field is required' : '');
+    setLNameError(!lname ? 'This field is required' : '');
+    setUserNameError(!userName ? 'This field is required' : '');
+    setEmailError(!email ? 'This field is required' : '');
+  };
 
-      const interests = await getAllItems('interests');
-      const allInterests = interests.map((interest) => ({
-        selected: user.interests.includes(interest._id),
-        ...interest,
-      }));
-
-      this.setState({
-        user,
-        events,
-        groups,
-        fname: user.fname,
-        lname: user.lname,
-        email: user.email,
-        userName: user.userName,
-
-        allInterests,
-      });
-    } catch (error) {
-      // console.log('error: ', error);
-    }
-  }
-
-  handleChange(event) {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
-
-  validate() {
-    const {
-      fname,
-      lname,
-      userName,
-      email,
-    } = this.state;
-    const fnameError = !fname ? 'This field is required' : '';
-    const lnameError = !lname ? 'This field is required' : '';
-    const userNameError = !userName ? 'This field is required' : '';
-    const emailError = !email ? 'This field is required' : '';
-    this.setState({
-      errors: {
-        fnameError, lnameError, userNameError, emailError,
-      },
-    });
-    return !!((fnameError === '' && lnameError === '' && userNameError === '' && emailError === ''));
-  }
-
-
-  async handleSubmit() {
-    const {
-      user, email, fname, lname, userName, allInterests,
-    } = this.state;
+  const handleSubmit = async () => {
     // filter for selected interests and store the id of the selected interests in the array
     const interests = allInterests.filter((i) => i.selected).map((i) => i._id);
 
@@ -99,52 +63,50 @@ class EditProfileInfo extends Component {
       userName,
       email,
       interests,
+      updatedAt: new Date().toLocaleString('en-CA'),
     };
 
-    if (this.validate()) {
+    if (fname !== '' && lname !== '' && userName !== '' && email !== '') {
       const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, user._id);
-      if (updatedData.length > 0) {
-      // this.setState({ redirectToReferrer: true });
+      if (updatedData._id) {
+        setAuthState({ token, expiresAt, userInfo: updatedData });
+        setSubmitMessage('Profile updated successfully!');
+        setTimeout(() => {
+          setSubmitMessage('');
+        }, 5000);
       }
+    } else {
+      setErrors();
     }
-  }
+  };
 
-  handleCheckInterest(id) {
-    this.setState((prevState) => {
-      const updatedInterests = prevState.allInterests.map((interest) => {
-        if (interest._id === id) {
-          return {
-            ...interest,
-            selected: !interest.selected,
-          };
-        }
-        return interest;
-      });
-
-      return {
-        allInterests: updatedInterests,
-      };
+  const handleCheckInterest = async (id) => {
+    const updatedInterests = allInterests.map((interest) => {
+      if (interest._id === id) {
+        return {
+          ...interest,
+          selected: !interest.selected,
+        };
+      }
+      return interest;
     });
-  }
+    setAllInterests(updatedInterests);
+  };
 
+  const profileStyle = { width: '10rem', height: 'auto' };
+  const interestStyle = {
+    display: 'flex',
+    alignItems: 'baseline',
+  };
+  const interestFieldSetStyle = {
+    marginTop: '.5rem',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(10rem, 1fr))',
+    width: '60%',
+  };
 
-  render() {
-    const {
-      user, events, groups, fname, lname, email, userName, allInterests, errors,
-    } = this.state;
-    const profileStyle = { width: '10rem', height: 'auto' };
-    const interestStyle = {
-      display: 'flex',
-      alignItems: 'baseline',
-    };
-    const interestFieldSetStyle = {
-      marginTop: '.5rem',
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(10rem, 1fr))',
-      width: '60%',
-    };
-
-    return (
+  return (
+    <>
       <form action="" method="PUT">
         <h2>
           Edit Profile:
@@ -158,24 +120,24 @@ class EditProfileInfo extends Component {
         <div>
           <strong>First Name: </strong>
           <input
+            type="text"
             name="fname"
             value={fname}
-            onChange={this.handleChange}
+            onChange={(e) => setFName(e.target.value)}
             required
           />
-          <p style={{ color: 'red' }}>{errors.fnameError}</p>
+          <p style={{ color: 'red' }}>{fnameError}</p>
         </div>
-
 
         <div>
           <strong>Last Name: </strong>
           <input
             name="lname"
             value={lname}
-            onChange={this.handleChange}
+            onChange={(e) => setLName(e.target.value)}
             required
           />
-          <p style={{ color: 'red' }}>{errors.lnameError}</p>
+          <p style={{ color: 'red' }}>{lnameError}</p>
         </div>
 
         <div>
@@ -183,10 +145,10 @@ class EditProfileInfo extends Component {
           <input
             name="userName"
             value={userName}
-            onChange={this.handleChange}
+            onChange={(e) => setUserName(e.target.value)}
             required
           />
-          <p style={{ color: 'red' }}>{errors.userNameError}</p>
+          <p style={{ color: 'red' }}>{userNameError}</p>
         </div>
 
         <div>
@@ -194,10 +156,10 @@ class EditProfileInfo extends Component {
           <input
             name="email"
             value={email}
-            onChange={this.handleChange}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <p style={{ color: 'red' }}>{errors.emailError}</p>
+          <p style={{ color: 'red' }}>{emailError}</p>
         </div>
 
         <h4>Interests</h4>
@@ -209,7 +171,7 @@ class EditProfileInfo extends Component {
                   id={`${interest.name}-id`}
                   type="checkbox"
                   checked={interest.selected}
-                  onChange={() => this.handleCheckInterest(interest._id)}
+                  onChange={() => handleCheckInterest(interest._id)}
                 />
                 {interest.name}
               </label>
@@ -226,6 +188,7 @@ class EditProfileInfo extends Component {
           ))}
         </ul>
         {groups.length === 0 && 'None'}
+
         <h4>Events</h4>
         <ul>
           {events.map((event) => (
@@ -237,11 +200,14 @@ class EditProfileInfo extends Component {
         {events.length === 0 && 'None'}
 
         <div>
-          <button type="button" className="safe" onClick={() => this.handleSubmit()}>Save</button>
+          <button type="button" className="safe" onClick={handleSubmit}>Save</button>
+        </div>
+        <div style={{ color: 'dodgerblue' }}>
+          {submitMessage}
         </div>
       </form>
-    );
-  }
-}
+    </>
+  );
+};
 
 export default EditProfileInfo;
