@@ -29,6 +29,7 @@ import CreateEventReviewPage from './components/CreateEventReviewPage';
 import EditProfileInfo from './components/EditProfileInfo';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
+import EditEvent from './components/EditEvent';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -83,13 +84,16 @@ const AppRoutes = () => (
     <AuthenticatedRoute exact path="/groups/create">
       <CreateGroup />
     </AuthenticatedRoute>
-    <AuthenticatedRoute exact path="/events/create/:_id">
+    <AuthenticatedRoute path="/events/create/:_id">
       <CreateEvent />
     </AuthenticatedRoute>
     <AuthenticatedRoute exact path="/users/edit/">
       <EditProfileInfo />
     </AuthenticatedRoute>
-
+    <AuthenticatedRoute path="/events/edit/:_id">
+      <EditEvent />
+    </AuthenticatedRoute>
+   
     <AdminRoute path="/admin/groups/flag/:_id">
       <FlagGroup />
     </AdminRoute>
