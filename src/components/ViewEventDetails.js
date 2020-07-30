@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
+import ReactRating from 'react-rating'; // https://www.npmjs.com/package/react-rating
 import { AuthContext } from '../context/AuthContext';
 
 import {
@@ -207,7 +208,16 @@ const ViewEventDetails = () => {
           <div key={review.createdBy}>
             <h4>Review</h4>
             <p>{`Review text: ${review.reviewText}`}</p>
-            <p>{`Rating: ${review.rating}`}</p>
+            <p>
+              Rating:
+              <ReactRating
+                name="rating"
+                initialRating={review.rating}
+                readonly
+                fullSymbol={<img src={`${process.env.PUBLIC_URL}/images/Star.png`} alt="Star" height="20px" width="20" />}
+                emptySymbol={<img src={`${process.env.PUBLIC_URL}/images/Star_Empty.png`} alt="Star" height="20px" width="20" />}
+              />
+            </p>
             <p>
               {usersObj[review.createdBy] && ` Review by: ${usersObj[review.createdBy].fname} ${usersObj[review.createdBy].lname} `}
             </p>
