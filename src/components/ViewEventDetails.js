@@ -166,7 +166,7 @@ const ViewEventDetails = () => {
       </div>
       )}
       {group.members
-      && (group.members.includes(userInfo._id)
+      && (group.members.map((m) => m._id).includes(userInfo._id)
       || group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id))
       && (event.attendees && (event.attendees.includes(userInfo._id)) ? (
         <div>
