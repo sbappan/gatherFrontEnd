@@ -1,24 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Redirect } from 'react-router';
 import { AuthContext } from '../context/AuthContext';
 import {
   getAssociatedItems, createOrUpdateItem, getAllItems, getOneItem,
 } from '../Helpers';
 import profile from '../stockProfileImage.jpg';
 
-
 const EditProfileInfo = () => {
   const authContext = useContext(AuthContext);
-  const { authState: { userInfo } } = authContext;
+  const {
+    setAuthState, authState: { userInfo, token, expiresAt },
+  } = authContext;
   const [user, setUser] = useState({});
   const [events, setEvents] = useState([]);
   const [groups, setGroups] = useState([]);
   const [allInterests, setAllInterests] = useState([]);
-  const [fname, setFName] = useState('');
-  const [lname, setLName] = useState('');
-  const [email, setEmail] = useState('');
-  const [userName, setUserName] = useState('');
-  const [redirectToReferrer, setRedirectToReferrer] = useState(false);
+  const [fname, setFName] = useState(userInfo.fname);
+  const [lname, setLName] = useState(userInfo.lname);
+  const [email, setEmail] = useState(userInfo.email);
+  const [userName, setUserName] = useState(userInfo.userName);
+  const [submitMessage, setSubmitMessage] = useState('');
   const [fnameError, setFNameError] = useState('');
   const [lnameError, setLNameError] = useState('');
   const [userNameError, setUserNameError] = useState('');
@@ -44,14 +44,7 @@ const EditProfileInfo = () => {
       }
     };
     getData();
-  }, [userInfo._id]);
-
-  useEffect(() => {
-    setFName(user.fname);
-    setLName(user.lname);
-    setUserName(user.userName);
-    setEmail(user.email);
-  }, [user._id]);
+  }, [userInfo._id, user._id, user.interests]);
 
   const setErrors = async () => {
     setFNameError(!fname ? 'This field is required' : '');
@@ -59,7 +52,6 @@ const EditProfileInfo = () => {
     setUserNameError(!userName ? 'This field is required' : '');
     setEmailError(!email ? 'This field is required' : '');
   };
-
 
   const handleSubmit = async () => {
     // filter for selected interests and store the id of the selected interests in the array
@@ -77,7 +69,11 @@ const EditProfileInfo = () => {
     if (fname !== '' && lname !== '' && userName !== '' && email !== '') {
       const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, user._id);
       if (updatedData._id) {
-        // setRedirectToReferrer(true);
+        setAuthState({ token, expiresAt, userInfo: updatedData });
+        setSubmitMessage('Profile updated successfully!');
+        setTimeout(() => {
+          setSubmitMessage('');
+        }, 5000);
       }
     } else {
       setErrors();
@@ -109,10 +105,6 @@ const EditProfileInfo = () => {
     width: '60%',
   };
 
-  if (redirectToReferrer === true) {
-    return <Redirect to={`/users/${user._id}`} />;
-  }
-
   return (
     <>
       <form action="" method="PUT">
@@ -128,6 +120,7 @@ const EditProfileInfo = () => {
         <div>
           <strong>First Name: </strong>
           <input
+            type="text"
             name="fname"
             value={fname}
             onChange={(e) => setFName(e.target.value)}
@@ -209,10 +202,12 @@ const EditProfileInfo = () => {
         <div>
           <button type="button" className="safe" onClick={handleSubmit}>Save</button>
         </div>
+        <div style={{ color: 'dodgerblue' }}>
+          {submitMessage}
+        </div>
       </form>
     </>
   );
 };
-
 
 export default EditProfileInfo;
