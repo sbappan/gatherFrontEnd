@@ -69,7 +69,7 @@ const ViewEvent = () => {
           <p>
             {`${event.location.line1}`}
             {', '}
-            {(event.location.line2 != null ? <p>{`${event.location.line2}`}</p> : '')}
+            {(event.location.line2 != null ? <span>{`${event.location.line2}`}</span> : '')}
             {`${event.location.city}`}
             {', '}
             {`${event.location.province}`}
