@@ -14,80 +14,42 @@ const ViewEventDetails = () => {
   const [event, setEvent] = useState({});
   const [group, setGroup] = useState({});
   const [usersObj, setUsersObj] = useState({});
+  const [redirectToReferrer, setRedirectToReferrer] = useState(false);
   const { _id: eventId } = useParams();
 
-  const [name, setEventName] = useState('');
-  const [description, setEventDescription] = useState('');
-  const [date, setEventDate] = useState(new Date());
-  const [location, setEventLocation] = useState({
-    line1: '', line2: '', city: '', postalCode: '', province: '',
-  });
-  const [attendees, setEventAttendees] = useState([]);
-  const [reviews, setEventReviews] = useState([]);
-  const [createdBy, setEventCreatedBy] = useState('');
-  const [updatedBy, setEventUpdatedBy] = useState('');
-  const [status, setEventStatus] = useState([]);
-
-  const [redirectToReferrer, setRedirectToReferrer] = useState(false);
-
   useEffect(() => {
-    const getData = async () => {
-      const eventPromise = getOneItem('events', eventId);
-      const usersObjPromise = getAllItemsAsObject('users');
-      const [eventData, usersObjData] = await Promise.all([eventPromise,
-        usersObjPromise]);
-
-      setUsersObj(usersObjData);
-
+    const getEventData = async () => {
+      const eventData = await getOneItem('events', eventId);
       setEvent(eventData);
-      setEventName(eventData.name);
-      setEventDescription(eventData.description);
-      setEventDate(eventData.date);
-      setEventLocation(eventData.location);
-      setEventAttendees(eventData.attendees);
-      setEventReviews(eventData.reviews);
-      setEventCreatedBy(eventData.createdBy);
-      setEventUpdatedBy(eventData.updatedData);
-      setEventStatus(eventData.status);
-
       if (event.group) {
         const groupData = await getOneItem('groups', event.group);
         setGroup(groupData);
       }
     };
-    getData();
+    const getUsersData = async () => {
+      const usersObjData = await getAllItemsAsObject('users');
+      setUsersObj(usersObjData);
+    };
+    getEventData();
+    getUsersData();
   }, [eventId, event.group]);
 
-  const handleAttendence = async (eId, newAttendees) => {
+  const handleAttendanceClick = async (eId) => {
+    let newAttendees = [];
+    if (event.attendees.includes(userInfo._id)) {
+      newAttendees = event.attendees.filter((uId) => uId !== userInfo._id);
+    } else {
+      newAttendees = event.attendees.concat(userInfo._id);
+    }
+
     const bodyData = {
-      name,
-      description,
-      group,
-      date,
-      createdBy,
-      updatedBy,
       attendees: newAttendees,
-      reviews,
-      location,
-      status,
     };
 
     const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eId);
 
-    if (!updatedData.errors) {
-      window.location.reload(false);
-    } else {
-      // console.log(updatedData.errors);
-    }
-  };
-
-  const handleAttendenceClick = async (eId) => {
-    if (attendees.includes(userInfo._id)) {
-      const newAttendees = attendees.filter((uId) => uId !== userInfo._id);
-      handleAttendence(eId, newAttendees);
-    } else {
-      const newAttendees = attendees.concat(userInfo._id);
-      handleAttendence(eId, newAttendees);
+    if (updatedData._id) {
+      setEvent(updatedData);
     }
   };
 
@@ -126,20 +88,11 @@ const ViewEventDetails = () => {
         ))}
       </div>
       <p>
-        Being held at:
-        {' '}
-        {event.location && event.location.line1}
-        {', '}
-        {event.location && event.location.line2}
-        {' '}
-        {event.location && event.location.city}
-        {', '}
-        {event.location && event.location.province}
-        {', '}
-        {event.location && event.location.postalCode}
-        {' on '}
-        {moment(event.date).format('LLL')}
+        Location:
+        {event.location
+        && `${event.location.line1} ${event.location.line2} ${event.location.city} ${event.location.province} ${event.location.postalCode}`}
       </p>
+      <p>{`Date & Time: ${moment(event.date).format('LLL')}`}</p>
       {group.members
       && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
       && (
@@ -177,10 +130,10 @@ const ViewEventDetails = () => {
             collection="events"
             onClick={() => {
             // eslint-disable-next-line no-alert
-              if (window.confirm(`Are you sure you want to cancel your attendence to: ${event.name}?`)) { handleAttendenceClick(event._id); }
+              if (window.confirm(`Are you sure you want to cancel your attendence to: ${event.name}?`)) { handleAttendanceClick(event._id); }
             }}
           >
-            Attending Event
+            Cancel Event Attendance
           </button>
         </div>
       ) : (
@@ -190,7 +143,7 @@ const ViewEventDetails = () => {
             className="success"
             collection="events"
             onClick={() => {
-              handleAttendenceClick(event._id);
+              handleAttendanceClick(event._id);
             }}
           >
             Attend Event
@@ -209,6 +162,8 @@ const ViewEventDetails = () => {
             <h4>Review</h4>
             <p>{`Review text: ${review.reviewText}`}</p>
             <p>
+              {/* ReactRating component causes this error in dev, but not shown in prod:
+              Using UNSAFE_componentWillReceiveProps */}
               Rating:
               <ReactRating
                 name="rating"
