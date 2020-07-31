@@ -30,6 +30,7 @@ import EditProfileInfo from './components/EditProfileInfo';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import EditEvent from './components/EditEvent';
+import CreateUserPost from './components/CreateUserPost';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -86,6 +87,9 @@ const AppRoutes = () => (
     </AuthenticatedRoute>
     <AuthenticatedRoute path="/events/create/:_id">
       <CreateEvent />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/groups/feed/:_id">
+      <CreateUserPost />
     </AuthenticatedRoute>
     <AuthenticatedRoute exact path="/users/edit/">
       <EditProfileInfo />

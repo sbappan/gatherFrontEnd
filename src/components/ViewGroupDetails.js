@@ -39,6 +39,8 @@ const ViewGroupDetails = () => {
     getData();
   }, [groupId]);
 
+  console.log(group.comments.message);
+
   const handleChangeTab = (tab) => {
     setActiveTab(tab);
   };
@@ -115,7 +117,22 @@ const ViewGroupDetails = () => {
             {interestsObj[interest] && interestsObj[interest].name}
           </p>
         ))}
+        {group.comments && group.comments.map((comment) => (
+          <p key={comment}>
+            {group.comments[comment] && group.comments.message}
+          </p>
+        ))}
       </div>
+      {group.members
+      && group.members.map((m) => m._id).includes(userInfo._id)
+      && (
+      <div>
+        <Link to={`/groups/feed/${group._id}`}>
+          <button type="button" className="success" collection="groups">Create Post</button>
+        </Link>
+      </div>
+      )}
+      <br />
       {group.members
       && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
       && (
@@ -147,7 +164,7 @@ const ViewGroupDetails = () => {
         {activeTab === 'description' && <DescriptionTab description={group.description} />}
         {activeTab === 'members' && <MembersTab members={usersObj} group={group} />}
         {activeTab === 'events' && <EventsTab events={events} />}
-        {activeTab === 'feed' && <GroupFeedTab />}
+        {activeTab === 'feed' && <GroupFeedTab group={group} />}
       </div>
     </div>
   );
@@ -184,11 +201,16 @@ function EventsTab({ events }) {
   );
 }
 
-function GroupFeedTab() {
+function GroupFeedTab(group) {
   return (
-    <>
-      <p>Group feed</p>
-    </>
+    <div>
+      <p>Tesdssat</p>
+      {group.comments && group.comments.map((comment) => (
+        <p key={comment}>
+          {`Test${group.comments[comment._id].message}`}
+        </p>
+      ))}
+    </div>
   );
 }
 
