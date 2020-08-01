@@ -23,6 +23,10 @@ const EditProfileInfo = () => {
   const [lnameError, setLNameError] = useState('');
   const [userNameError, setUserNameError] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [messageUpdates, setMssageUpdates] = useState(userInfo.emailUpdates.messageUpdates);
+  const [newGroupUpdates, setNewGroupUpdates] = useState(userInfo.emailUpdates.newGroupUpdates);
+  const [newEventUpdates, setNewEventUpdates] = useState(userInfo.emailUpdates.newEventUpdates);
+  const [replyUpdates, setReplyUpdates] = useState(userInfo.emailUpdates.replyUpdates);
 
   useEffect(() => {
     const getData = async () => {
@@ -52,7 +56,6 @@ const EditProfileInfo = () => {
     getData();
   }, [user._id, user.interests]);
 
-
   const setErrors = async () => {
     setFNameError(!fname ? 'This field is required' : '');
     setLNameError(!lname ? 'This field is required' : '');
@@ -71,6 +74,12 @@ const EditProfileInfo = () => {
       email,
       interests,
       updatedAt: new Date().toLocaleString('en-CA'),
+      emailUpdates: {
+        messageUpdates,
+        newGroupUpdates,
+        newEventUpdates,
+        replyUpdates,
+      },
     };
 
     if (fname !== '' && lname !== '' && userName !== '' && email !== '') {
@@ -95,6 +104,7 @@ const EditProfileInfo = () => {
           selected: !interest.selected,
         };
       }
+
       return interest;
     });
     setAllInterests(updatedInterests);
@@ -206,12 +216,58 @@ const EditProfileInfo = () => {
         </ul>
         {events.length === 0 && 'None'}
 
+        <h4>Email Updates</h4>
+        <label htmlFor="messageUpdates">
+          <input
+            id="messageUpdates"
+            name="messageUpdates"
+            type="checkbox"
+            checked={messageUpdates}
+            onChange={(e) => setMssageUpdates(e.target.checked)}
+          />
+          Message updates
+        </label>
+        <br />
+        <label htmlFor="newGroupUpdates">
+          <input
+            id="newGroupUpdates"
+            name="newGroupUpdates"
+            type="checkbox"
+            checked={newGroupUpdates}
+            onChange={(e) => setNewGroupUpdates(e.target.checked)}
+          />
+          New group updates
+        </label>
+        <br />
+        <label htmlFor="newEventUpdates">
+          <input
+            id="newEventUpdates"
+            name="newEventUpdates"
+            type="checkbox"
+            checked={newEventUpdates}
+            onChange={(e) => setNewEventUpdates(e.target.checked)}
+          />
+          New event updates
+        </label>
+        <br />
+        <label htmlFor="replyUpdates">
+          <input
+            id="replyUpdates"
+            name="replyUpdates"
+            type="checkbox"
+            checked={replyUpdates}
+            onChange={(e) => setReplyUpdates(e.target.checked)}
+          />
+          Reply updates
+        </label>
+
         <div>
           <button type="button" className="safe" onClick={handleSubmit}>Save</button>
         </div>
         <div style={{ color: 'dodgerblue' }}>
           {submitMessage}
         </div>
+
       </form>
     </>
   );
