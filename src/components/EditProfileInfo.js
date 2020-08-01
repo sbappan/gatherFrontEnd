@@ -33,9 +33,15 @@ const EditProfileInfo = () => {
       const [eventsData, groupsData] = await Promise.all([eventsPromise, groupsPromise]);
       setEvents(eventsData);
       setGroups(groupsData);
+    };
+    getData();
+  }, [userInfo._id, user._id]);
+  // }, [userInfo._id, user._id, user.interests]);
 
+  useEffect(() => {
+    const getData = async () => {
+      const interests = await getAllItems('interests');
       if (user._id) {
-        const interests = await getAllItems('interests');
         const interestsData = interests.map((interest) => ({
           selected: user.interests.includes(interest._id),
           ...interest,
@@ -44,7 +50,8 @@ const EditProfileInfo = () => {
       }
     };
     getData();
-  }, [userInfo._id, user._id, user.interests]);
+  }, [user._id, user.interests]);
+
 
   const setErrors = async () => {
     setFNameError(!fname ? 'This field is required' : '');
