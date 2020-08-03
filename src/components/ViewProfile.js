@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router';
-import { getOneItem, getAllItemsAsObject, getAssociatedItems } from '../Helpers';
+import {
+  getOneItem, getAllItemsAsObject, getAssociatedItems, createOrUpdateItem,
+} from '../Helpers';
 import profile from '../stockProfileImage.jpg';
+import { AuthContext } from '../context/AuthContext';
 
 const ViewProfile = (props) => {
+  const authContext = useContext(AuthContext);
+  const { setAuthState, authState: { userInfo, token, expiresAt } } = authContext;
   const { itemId } = props;
   const { _id } = useParams();
   const userId = itemId || _id;
@@ -29,6 +34,42 @@ const ViewProfile = (props) => {
     getData();
   }, [userId]);
 
+  const handleFollowClick = async () => {
+    const currentlyFollowing = [...userInfo.following];
+    currentlyFollowing.push(
+      userId,
+    );
+
+    const bodyData = {
+      following: currentlyFollowing,
+    };
+
+    const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, userInfo._id);
+    if (updatedData) {
+      setAuthState({ token, expiresAt, userInfo: updatedData });
+    } else {
+      // console.log(updatedData.errors);
+    }
+  };
+
+  const handleUnfollowClick = async () => {
+    const currentlyFollowing = [...userInfo.following];
+    const index = currentlyFollowing.indexOf(userId);
+    if (index !== -1) {
+      currentlyFollowing.splice(index, 1);
+    }
+    const bodyData = {
+      following: currentlyFollowing,
+    };
+
+    const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, userInfo._id);
+    if (updatedData) {
+      setAuthState({ token, expiresAt, userInfo: updatedData });
+    } else {
+    //  console.log(updatedData.errors);
+    }
+  };
+
   const profileStyle = { width: '10rem', height: 'auto' };
 
   return (
@@ -41,7 +82,14 @@ const ViewProfile = (props) => {
         <strong>Email </strong>
         {user.email}
       </p>
-
+      <br />
+      {userInfo.following
+      && userInfo.following.includes(userId)
+        ? (
+          <button type="button" className="danger" collection="users" onClick={() => handleUnfollowClick()}>Unfollow</button>
+        ) : (
+          <button type="button" className="safe" collection="users" onClick={() => handleFollowClick()}>Follow</button>
+        )}
       <h4>Interests</h4>
       <ul>
         {user.interests && user.interests.map((interest) => (
