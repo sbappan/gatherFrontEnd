@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 
 const CreateUserPost = () => {
   const authContext = useContext(AuthContext);
-  const { authState } = authContext;
+  const { authState: { userInfo } } = authContext;
   const { _id: groupId } = useParams();
   const [group, setGroup] = useState({});
   const [messageText, setMessageText] = useState('');
@@ -24,14 +24,15 @@ const CreateUserPost = () => {
     let bodyData = {};
 
     bodyData = {
-      comments: [...group.comments, {
+      posts: [...group.posts, {
+        message: messageText,
+        createdBy: userInfo._id,
+        date: new Date().toISOString(),
         status: {
           isFlagged: false,
           reason: null,
+          updatedBy: null,
         },
-        date: new Date().toISOString(),
-        message: messageText,
-        user: authState._id,
       }],
     };
 
@@ -52,17 +53,12 @@ const CreateUserPost = () => {
         Associated group:
         {' '}
         {group.name}
-
       </h3>
       <br />
-      <br />
-      <br />
-      <p>Please leave a review below</p>
       <input name="postText" type="text" onChange={(e) => setMessageText(e.target.value)} style={{ height: '90px', width: '800px' }} />
       <br />
       <br />
       <button type="button" className="safe" onClick={handleSubmit}>Submit</button>
-
     </div>
   );
 };

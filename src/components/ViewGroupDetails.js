@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import moment from 'moment';
 import {
   getOneItem, getAllItemsAsObject, getGroupEvents, createOrUpdateItem,
 } from '../Helpers';
@@ -39,7 +40,7 @@ const ViewGroupDetails = () => {
     getData();
   }, [groupId]);
 
-  console.log(group.comments.message);
+  // console.log(group.comments.message);
 
   const handleChangeTab = (tab) => {
     setActiveTab(tab);
@@ -164,7 +165,7 @@ const ViewGroupDetails = () => {
         {activeTab === 'description' && <DescriptionTab description={group.description} />}
         {activeTab === 'members' && <MembersTab members={usersObj} group={group} />}
         {activeTab === 'events' && <EventsTab events={events} />}
-        {activeTab === 'feed' && <GroupFeedTab group={group} />}
+        {activeTab === 'feed' && <GroupFeedTab group={group} members={usersObj} />}
       </div>
     </div>
   );
@@ -201,13 +202,18 @@ function EventsTab({ events }) {
   );
 }
 
-function GroupFeedTab(group) {
+function GroupFeedTab({ group, members }) {
   return (
     <div>
-      <p>Tesdssat</p>
-      {group.comments && group.comments.map((comment) => (
-        <p key={comment}>
-          {`Test${group.comments[comment._id].message}`}
+      {group.posts && group.posts.map((post) => (
+        <p key={post._id}>
+          {`Message: ${post.message}`}
+          <br />
+          {`Date Created: ${(`${moment(post.date).format('L')} @ ${moment(post.date).format('LT')}`)}`}
+          <br />
+          <Link to={`/users/${post.createdBy}`}>{`Created By: ${members[post.createdBy].fname} ${members[post.createdBy].lname}`}</Link>
+          <br />
+          <br />
         </p>
       ))}
     </div>
