@@ -31,6 +31,7 @@ import SignUp from './components/SignUp';
 import Login from './components/Login';
 import EditEvent from './components/EditEvent';
 import CreateUserPost from './components/CreateUserPost';
+import FaqPage from './components/FaqPage';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -68,6 +69,7 @@ const AppRoutes = () => (
   <Switch>
     <Route exact path="/signup" component={SignUp} />
     <Route exact path="/login" component={Login} />
+    <Route exact path="/faq" component={FaqPage} />
 
     <AuthenticatedRoute exact path="/">
       <Home />
@@ -97,7 +99,7 @@ const AppRoutes = () => (
     <AuthenticatedRoute path="/events/edit/:_id">
       <EditEvent />
     </AuthenticatedRoute>
-   
+
     <AdminRoute path="/admin/groups/flag/:_id">
       <FlagGroup />
     </AdminRoute>

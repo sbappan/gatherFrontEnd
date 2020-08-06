@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Redirect } from 'react-router-dom';
 import moment from 'moment';
 import {
-  getOneItem, getAllItemsAsObject, getGroupEvents, createOrUpdateItem,
+  getOneItem, getAllItemsAsObject, getGroupEvents, createOrUpdateItem, deleteItem,
 } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
 
@@ -15,6 +15,8 @@ const ViewGroupDetails = () => {
   const [interestsObj, setInterestsObj] = useState({});
   const [activeTab, setActiveTab] = useState('description');
   const { _id: groupId } = useParams();
+
+  const [redirectToReferrer, setRedirectToReferrer] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -87,6 +89,20 @@ const ViewGroupDetails = () => {
     }
   };
 
+  const handleDeleteClick = async (gId) => {
+    const updatedData = await deleteItem('groups', gId);
+
+    if (!updatedData.errors) {
+      setRedirectToReferrer(true);
+    } else {
+      // console.log(updatedData.errors);
+    }
+  };
+
+  if (redirectToReferrer === true) {
+    return <Redirect to="/admin/groups" />;
+  }
+
   return (
     <div>
       <h1>{group.name}</h1>
@@ -152,6 +168,23 @@ const ViewGroupDetails = () => {
           <button type="button" className="safe" collection="users" onClick={() => handleJoinClick(group._id)}>Join Group</button>
         )}
       <br />
+      <br />
+      {group.members
+      && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
+      && (
+      <div>
+        <button
+          type="button"
+          className="danger"
+          collection="events"
+          onClick={() => {
+            if (window.confirm(`Are you sure you wish to delete: ${group.name}\n(Careful, there is no undoing this request!)`)) { handleDeleteClick(group._id); }
+          }}
+        >
+          Delete Group
+        </button>
+      </div>
+      )}
       <br />
       <button type="button" id="description" variant="light" className={activeTab === 'description' ? 'success' : 'safe'} onClick={() => handleChangeTab('description')}>Description</button>
 
