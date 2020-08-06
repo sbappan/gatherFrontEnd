@@ -85,6 +85,7 @@ const EditProfileInfo = () => {
     if (fname !== '' && lname !== '' && userName !== '' && email !== '') {
       const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, user._id);
       if (updatedData._id) {
+        setUser(updatedData);
         setAuthState({ token, expiresAt, userInfo: updatedData });
         setSubmitMessage('Profile updated successfully!');
         setTimeout(() => {
