@@ -16,6 +16,7 @@ const ViewEventDetails = () => {
   const [usersObj, setUsersObj] = useState({});
   const [redirectToReferrer, setRedirectToReferrer] = useState(false);
   const { _id: eventId } = useParams();
+  const passed = moment(event.date).isBefore(moment());
 
   useEffect(() => {
     const getEventData = async () => {
@@ -136,49 +137,62 @@ const ViewEventDetails = () => {
             Cancel Event Attendance
           </button>
         </div>
-      ) : (
-        <div>
-          <button
-            type="button"
-            className="success"
-            collection="events"
-            onClick={() => {
-              handleAttendanceClick(event._id);
-            }}
-          >
-            Attend Event
-          </button>
-        </div>
+      ) : (!passed
+      && (
+      <div>
+        <button
+          type="button"
+          className="success"
+          collection="events"
+          onClick={() => {
+            handleAttendanceClick(event._id);
+          }}
+        >
+          Attend Event
+        </button>
+      </div>
+      )
+
       )
       )}
+
+
+      {passed
+      && (
       <div>
-        <Link to={`/events/review/${event._id}`}>
-          <button type="button" className="success" collection="groups">Review Event</button>
-        </Link>
-      </div>
-      <div>
-        {event.reviews && event.reviews.map((review) => (
-          <div key={review.createdBy}>
-            <h4>Review</h4>
-            <p>{`Review text: ${review.reviewText}`}</p>
-            <p>
-              {/* ReactRating component causes this error in dev, but not shown in prod:
+        <div>
+          <Link to={`/events/review/${event._id}`}>
+            <button type="button" className="success" collection="groups">Review Event</button>
+          </Link>
+        </div>
+
+
+        <div>
+          {event.reviews && event.reviews.map((review) => (
+            <div key={review.createdBy}>
+              <h4>Review</h4>
+              <p>{`Review text: ${review.reviewText}`}</p>
+              <p>
+                {/* ReactRating component causes this error in dev, but not shown in prod:
               Using UNSAFE_componentWillReceiveProps */}
-              Rating:
-              <ReactRating
-                name="rating"
-                initialRating={review.rating}
-                readonly
-                fullSymbol={<img src={`${process.env.PUBLIC_URL}/images/Star.png`} alt="Star" height="20px" width="20" />}
-                emptySymbol={<img src={`${process.env.PUBLIC_URL}/images/Star_Empty.png`} alt="Star" height="20px" width="20" />}
-              />
-            </p>
-            <p>
-              {usersObj[review.createdBy] && ` Review by: ${usersObj[review.createdBy].fname} ${usersObj[review.createdBy].lname} `}
-            </p>
-          </div>
-        ))}
+                Rating:
+                <ReactRating
+                  name="rating"
+                  initialRating={review.rating}
+                  readonly
+                  fullSymbol={<img src={`${process.env.PUBLIC_URL}/images/Star.png`} alt="Star" height="20px" width="20" />}
+                  emptySymbol={<img src={`${process.env.PUBLIC_URL}/images/Star_Empty.png`} alt="Star" height="20px" width="20" />}
+                />
+              </p>
+              <p>
+                {usersObj[review.createdBy] && ` Review by: ${usersObj[review.createdBy].fname} ${usersObj[review.createdBy].lname} `}
+              </p>
+            </div>
+          ))}
+        </div>
+
       </div>
+      )}
     </div>
   );
 };
