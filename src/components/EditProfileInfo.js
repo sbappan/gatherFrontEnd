@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import {
   getAssociatedItems, createOrUpdateItem, getAllItems, getOneItem,
 } from '../Helpers';
-import profile from '../stockProfileImage.jpg';
+import profile from '../stockProfileImage.png';
 
 const EditProfileInfo = () => {
   const authContext = useContext(AuthContext);
@@ -40,7 +40,6 @@ const EditProfileInfo = () => {
     };
     getData();
   }, [userInfo._id, user._id]);
-  // }, [userInfo._id, user._id, user.interests]);
 
   useEffect(() => {
     const getData = async () => {
@@ -67,11 +66,28 @@ const EditProfileInfo = () => {
     // filter for selected interests and store the id of the selected interests in the array
     const interests = allInterests.filter((i) => i.selected).map((i) => i._id);
 
+    const cloudName = `${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`;
+    const cloudPreset = `${process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET}`;
+
+    const { files } = document.querySelector('input[type="file"]');
+    const formData = new FormData();
+    formData.append('file', files[0]);
+    formData.append('upload_preset', cloudPreset);
+    const options = {
+      method: 'POST',
+      body: formData,
+    };
+
+    const photoUploadPromise = await fetch(`https://api.Cloudinary.com/v1_1/${cloudName}/image/upload`, options);
+
+    const photoObj = await photoUploadPromise.json();
+
     const bodyData = {
       fname,
       lname,
       userName,
       email,
+      photo: photoObj.secure_url,
       interests,
       updatedAt: new Date().toLocaleString('en-CA'),
       emailUpdates: {
@@ -122,6 +138,7 @@ const EditProfileInfo = () => {
     gridTemplateColumns: 'repeat(auto-fit, minmax(10rem, 1fr))',
     width: '60%',
   };
+  const userPhoto = user.photo || profile;
 
   return (
     <>
@@ -133,8 +150,12 @@ const EditProfileInfo = () => {
           {`${user.fname} ${user.lname} (${user.userName})`}
         </h2>
 
-        <img src={profile} alt="Profile" style={profileStyle} />
-
+        <h4>Profile picture</h4>
+        <img src={userPhoto} alt="Profile" style={profileStyle} />
+        <div className="form-group">
+          <p>Upload new photo:</p>
+          <input type="file" accept="image/png, image/jpeg" />
+        </div>
         <div>
           <strong>First Name: </strong>
           <input

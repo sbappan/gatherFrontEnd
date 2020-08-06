@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import {
   getOneItem, getAllItemsAsObject, getAssociatedItems, createOrUpdateItem,
 } from '../Helpers';
-import profile from '../stockProfileImage.jpg';
+import profile from '../stockProfileImage.png';
 import { AuthContext } from '../context/AuthContext';
 
 const ViewProfile = (props) => {
@@ -68,13 +68,14 @@ const ViewProfile = (props) => {
   };
 
   const profileStyle = { width: '10rem', height: 'auto' };
+  const userPhoto = user.photo || profile;
 
   return (
     <div>
       <h2>
         {`${user.fname} ${user.lname} (${user.userName})`}
       </h2>
-      <img src={profile} alt="Profile" style={profileStyle} />
+      <img src={userPhoto} alt="Profile" style={profileStyle} />
       <p>
         <strong>Email </strong>
         {user.email}
