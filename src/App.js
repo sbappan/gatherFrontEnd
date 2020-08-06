@@ -30,6 +30,7 @@ import EditProfileInfo from './components/EditProfileInfo';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import EditEvent from './components/EditEvent';
+import FaqPage from './components/FaqPage';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -67,6 +68,7 @@ const AppRoutes = () => (
   <Switch>
     <Route exact path="/signup" component={SignUp} />
     <Route exact path="/login" component={Login} />
+    <Route exact path="/FAQ" component={FaqPage} />
 
     <AuthenticatedRoute exact path="/">
       <Home />
