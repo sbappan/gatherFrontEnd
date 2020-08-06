@@ -13,6 +13,7 @@ export default class SignUp extends Component {
       email: '',
       fname: '',
       lname: '',
+      photo: '',
       password: '',
       password2: '',
       messageUpdates: false,
@@ -69,11 +70,33 @@ export default class SignUp extends Component {
   }
 
   async handleClick() {
+    const { photo: photoTemp } = this.state;
+
+    if (!photoTemp) {
+      const cloudName = `${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}`;
+      const cloudPreset = `${process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET}`;
+
+      const { files } = document.querySelector('input[type="file"]');
+      const formData = new FormData();
+      formData.append('file', files[0]);
+      formData.append('upload_preset', cloudPreset);
+      const options = {
+        method: 'POST',
+        body: formData,
+      };
+
+      const photoObj = await fetch(`https://api.Cloudinary.com/v1_1/${cloudName}/image/upload`, options)
+        .then((res) => res.json());
+
+      this.setState({ photo: photoObj.secure_url });
+    }
+
     const {
       userName,
       email,
       fname,
       lname,
+      photo,
       password,
       password2,
       interests,
@@ -83,8 +106,6 @@ export default class SignUp extends Component {
       replyUpdates,
     } = this.state;
 
-    // ToDo: Photo upload has to be handled later
-
     const bodyData = {
       userName,
       email,
@@ -93,6 +114,7 @@ export default class SignUp extends Component {
       password,
       password2,
       interests,
+      photo,
       emailUpdates: {
         messageUpdates,
         newGroupUpdates,
@@ -195,6 +217,10 @@ export default class SignUp extends Component {
                   onChange={this.handleChange}
                   required
                 />
+                <h4>Profile picture</h4>
+                <div>
+                  <input type="file" accept="image/png, image/jpeg" />
+                </div>
                 <h4>Password</h4>
                 <input
                   type="password"
