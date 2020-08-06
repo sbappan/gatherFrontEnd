@@ -53,17 +53,14 @@ const ViewProfile = (props) => {
   };
 
   const handleUnfollowClick = async () => {
-    const currentlyFollowing = [...userInfo.following];
-    const index = currentlyFollowing.indexOf(userId);
-    if (index !== -1) {
-      currentlyFollowing.splice(index, 1);
-    }
+    const currentlyFollowing = userInfo.following.filter((id) => id !== userId);
+
     const bodyData = {
       following: currentlyFollowing,
     };
 
     const updatedData = await createOrUpdateItem('PUT', 'users', bodyData, userInfo._id);
-    if (updatedData) {
+    if (updatedData._id) {
       setAuthState({ token, expiresAt, userInfo: updatedData });
     } else {
     //  console.log(updatedData.errors);
@@ -83,13 +80,17 @@ const ViewProfile = (props) => {
         {user.email}
       </p>
       <br />
-      {userInfo.following
+      {userInfo._id !== userId && (
+      <>
+        {userInfo.following
       && userInfo.following.includes(userId)
-        ? (
-          <button type="button" className="danger" collection="users" onClick={() => handleUnfollowClick()}>Unfollow</button>
-        ) : (
-          <button type="button" className="safe" collection="users" onClick={() => handleFollowClick()}>Follow</button>
-        )}
+          ? (
+            <button type="button" className="danger" collection="users" onClick={() => handleUnfollowClick()}>Unfollow</button>
+          ) : (
+            <button type="button" className="safe" collection="users" onClick={() => handleFollowClick()}>Follow</button>
+          )}
+      </>
+      )}
       <h4>Interests</h4>
       <ul>
         {user.interests && user.interests.map((interest) => (
