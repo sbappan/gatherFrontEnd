@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, Redirect } from 'react-router-dom';
+import moment from 'moment';
 import {
   getOneItem, getAllItemsAsObject, getGroupEvents, createOrUpdateItem, deleteItem,
 } from '../Helpers';
@@ -40,6 +41,8 @@ const ViewGroupDetails = () => {
 
     getData();
   }, [groupId]);
+
+  // console.log(group.comments.message);
 
   const handleChangeTab = (tab) => {
     setActiveTab(tab);
@@ -131,7 +134,22 @@ const ViewGroupDetails = () => {
             {interestsObj[interest] && interestsObj[interest].name}
           </p>
         ))}
+        {group.comments && group.comments.map((comment) => (
+          <p key={comment}>
+            {group.comments[comment] && group.comments.message}
+          </p>
+        ))}
       </div>
+      {group.members
+      && group.members.map((m) => m._id).includes(userInfo._id)
+      && (
+      <div>
+        <Link to={`/groups/feed/${group._id}`}>
+          <button type="button" className="success" collection="groups">Create Post</button>
+        </Link>
+      </div>
+      )}
+      <br />
       {group.members
       && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
       && (
@@ -180,7 +198,7 @@ const ViewGroupDetails = () => {
         {activeTab === 'description' && <DescriptionTab description={group.description} />}
         {activeTab === 'members' && <MembersTab members={usersObj} group={group} />}
         {activeTab === 'events' && <EventsTab events={events} />}
-        {activeTab === 'feed' && <GroupFeedTab />}
+        {activeTab === 'feed' && <GroupFeedTab group={group} members={usersObj} />}
       </div>
     </div>
   );
@@ -217,11 +235,21 @@ function EventsTab({ events }) {
   );
 }
 
-function GroupFeedTab() {
+function GroupFeedTab({ group, members }) {
   return (
-    <>
-      <p>Group feed</p>
-    </>
+    <div>
+      {group.posts && group.posts.map((post) => (
+        <p key={post._id}>
+          {`Message: ${post.message}`}
+          <br />
+          {`Date Created: ${(`${moment(post.date).format('L')} @ ${moment(post.date).format('LT')}`)}`}
+          <br />
+          <Link to={`/users/${post.createdBy}`}>{`Created By: ${members[post.createdBy].fname} ${members[post.createdBy].lname}`}</Link>
+          <br />
+          <br />
+        </p>
+      ))}
+    </div>
   );
 }
 

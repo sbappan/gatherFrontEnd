@@ -30,6 +30,7 @@ import EditProfileInfo from './components/EditProfileInfo';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import EditEvent from './components/EditEvent';
+import CreateUserPost from './components/CreateUserPost';
 import FaqPage from './components/FaqPage';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
@@ -68,7 +69,7 @@ const AppRoutes = () => (
   <Switch>
     <Route exact path="/signup" component={SignUp} />
     <Route exact path="/login" component={Login} />
-    <Route exact path="/FAQ" component={FaqPage} />
+    <Route exact path="/faq" component={FaqPage} />
 
     <AuthenticatedRoute exact path="/">
       <Home />
@@ -88,6 +89,9 @@ const AppRoutes = () => (
     </AuthenticatedRoute>
     <AuthenticatedRoute path="/events/create/:_id">
       <CreateEvent />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/groups/feed/:_id">
+      <CreateUserPost />
     </AuthenticatedRoute>
     <AuthenticatedRoute exact path="/users/edit/">
       <EditProfileInfo />
