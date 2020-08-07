@@ -35,12 +35,35 @@ const ViewEventDetails = () => {
     getUsersData();
   }, [eventId, event.group]);
 
+  const handleDeclineClick = async (eId) => {
+    let notAttending = [];
+    if (event.notGoing.includes(userInfo._id)) {
+      notAttending = event.notGoing.filter((uId) => uId !== userInfo._id);
+    } else {
+      notAttending = event.notGoing.concat(userInfo._id);
+    }
+
+    const bodyData = {
+      notGoing: notAttending,
+    };
+
+    const updatedData = await createOrUpdateItem('PUT', 'events', bodyData, eId);
+    if (updatedData._id) {
+      setEvent(updatedData);
+    } else {
+      // console.log(updatedData.errors);
+    }
+  };
+
   const handleAttendanceClick = async (eId) => {
     let newAttendees = [];
     if (event.attendees.includes(userInfo._id)) {
       newAttendees = event.attendees.filter((uId) => uId !== userInfo._id);
     } else {
       newAttendees = event.attendees.concat(userInfo._id);
+      if (event.notGoing.includes(userInfo._id)) {
+        handleDeclineClick(event._id);
+      }
     }
 
     const bodyData = {
@@ -120,6 +143,7 @@ const ViewEventDetails = () => {
         </button>
       </div>
       )}
+
       {group.members
       && (group.members.map((m) => m._id).includes(userInfo._id)
       || group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id))
@@ -150,12 +174,26 @@ const ViewEventDetails = () => {
         >
           Attend Event
         </button>
+        {event.notGoing && (event.notGoing.includes(userInfo._id) ? (
+          <h1>You are currently not attending this event!</h1>
+        ) : (
+          <button
+            type="button"
+            className="danger"
+            collection="events"
+            onClick={() => {
+              handleDeclineClick(event._id);
+            }}
+          >
+            Decline
+          </button>
+        )
+        )}
       </div>
       )
 
       )
       )}
-
 
       {passed
       && (
