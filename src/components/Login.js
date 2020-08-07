@@ -76,6 +76,9 @@ const Login = () => {
       <Link to="/signup" style={{ color: '#111', textDecoration: 'none', marginTop: '1rem' }}>
         <h3>Create Account</h3>
       </Link>
+      <Link to="/forgotpassword" style={{ color: '#111', textDecoration: 'none', marginTop: '1rem' }}>
+        <h4>Forgot password?</h4>
+      </Link>
     </>
   );
 };
