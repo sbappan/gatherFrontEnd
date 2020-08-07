@@ -32,6 +32,8 @@ import Login from './components/Login';
 import EditEvent from './components/EditEvent';
 import CreateUserPost from './components/CreateUserPost';
 import FaqPage from './components/FaqPage';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -70,6 +72,8 @@ const AppRoutes = () => (
     <Route exact path="/signup" component={SignUp} />
     <Route exact path="/login" component={Login} />
     <Route exact path="/faq" component={FaqPage} />
+    <Route exact path="/forgotpassword" component={ForgotPassword} />
+    <Route path="/password/reset/:id/:token" component={ResetPassword} />
 
     <AuthenticatedRoute exact path="/">
       <Home />
