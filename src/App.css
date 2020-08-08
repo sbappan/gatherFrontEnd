@@ -96,7 +96,7 @@ header h2 {
   margin: 0;
 }
 
-main button {
+main button, main input[type="submit"] {
   border: 0;
   border-radius: .2rem;
   cursor: pointer;
@@ -266,4 +266,24 @@ main button.filterButton:focus {
 
 .chatInput .inputMessage input[type=submit] {
   width: 8%;
+}
+
+.inviteForm {
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  height: 80rem;
+}
+
+.inviteForm > * {
+  margin: 1rem 0;
+}
+
+main input[type=submit] {
+  background-color: #00d1ff;
+  color: #111111;
+}
+
+.inviteForm input[type=submit] {
+  width: 8rem;
 }

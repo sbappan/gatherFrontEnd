@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import AdminDashboard from './AdminDashboard';
 import UserDashboard from './UserDashboard';
 import SearchBar from './SearchBar';
@@ -44,6 +45,14 @@ const Home = () => {
           <>
             {authContext.isAdmin() && <AdminDashboard countObj={countObj} />}
             {(Object.keys(search).length > 0) && <SearchBar search={search} />}
+            <div>
+              <Link to="/groups/create">
+                <button type="button" className="safe">Create Group</button>
+              </Link>
+              <Link to="/users/invite">
+                <button type="button" className="success">Invite to Gather</button>
+              </Link>
+            </div>
             <UserDashboard />
           </>
         )
