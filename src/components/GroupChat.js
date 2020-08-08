@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router';
+import moment from 'moment';
 import { AuthContext } from '../context/AuthContext';
 import {
   getOneItem,
@@ -77,7 +78,17 @@ const GroupChat = () => {
                 <h4>{usersObj && usersObj[chat.createdBy] && usersObj[chat.createdBy].userName}</h4>
               </div>
               <div className="chatMessage">
-                <p>{chat.message}</p>
+                <p>
+                  {chat.message}
+                  <span style={{ fontSize: '.65rem', color: '#909090' }}>
+                    &nbsp;&nbsp;&nbsp;
+                    {moment(chat.date).toNow(true)}
+                    {' '}
+                    ago
+                  </span>
+
+                </p>
+
               </div>
             </div>
           </div>
