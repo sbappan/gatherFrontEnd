@@ -161,6 +161,7 @@ const ViewGroupDetails = () => {
       )}
       <br />
       {group.members
+      && group.members.filter((m) => m._id).map((m) => m._id).includes(userInfo._id)
       && (
       <div>
         <Link to={`/groups/chat/${group._id}`}>
