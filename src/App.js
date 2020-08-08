@@ -34,6 +34,7 @@ import CreateUserPost from './components/CreateUserPost';
 import FaqPage from './components/FaqPage';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import ChangePassword from './components/ChangePassword';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -99,6 +100,9 @@ const AppRoutes = () => (
     </AuthenticatedRoute>
     <AuthenticatedRoute exact path="/users/edit/">
       <EditProfileInfo />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute exact path="/changepassword/">
+      <ChangePassword />
     </AuthenticatedRoute>
     <AuthenticatedRoute path="/events/edit/:_id">
       <EditEvent />

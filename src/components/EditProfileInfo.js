@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import {
-  getAssociatedItems, createOrUpdateItem, getAllItems, getOneItem,
+  getAssociatedItems, createOrUpdateItem, getAllItems, getOneItem, deleteItem,
 } from '../Helpers';
 import profile from '../stockProfileImage.png';
 
@@ -127,6 +128,31 @@ const EditProfileInfo = () => {
     setAllInterests(updatedInterests);
   };
 
+  const handleDeleteClick = async (uId) => {
+    groups.map((m, i) => {
+      groups[i].members.map((id, j) => {
+        if (groups[i].members[j]._id === userInfo._id) {
+          groups[i].members.splice(j, 1);
+
+          const bodyData = {
+            members: groups[i].members,
+          };
+          createOrUpdateItem('PUT', 'groups', bodyData, groups[i]._id);
+        }
+        return groups[i].members;
+      });
+      return groups;
+    });
+
+    const updatedData = await deleteItem('users', uId);
+
+    if (!updatedData.errors) {
+      authContext.logout(true);
+    } else {
+    // console.log(updatedData.errors);
+    }
+  };
+
   const profileStyle = { width: '10rem', height: 'auto' };
   const interestStyle = {
     display: 'flex',
@@ -200,7 +226,11 @@ const EditProfileInfo = () => {
           />
           <p style={{ color: 'red' }}>{emailError}</p>
         </div>
-
+        <div>
+          <Link to="/changepassword/">
+            <button type="button" className="success">Change password</button>
+          </Link>
+        </div>
         <h4>Interests</h4>
         <div style={interestFieldSetStyle}>
           {allInterests.map((interest) => (
@@ -291,6 +321,25 @@ const EditProfileInfo = () => {
         </div>
 
       </form>
+
+      <br />
+      <br />
+      <h2 style={{ color: 'red' }}>Please be careful. Deactivating your account is permanent.</h2>
+      <br />
+      <button
+        type="button"
+        className="danger"
+        style={{ width: '15rem' }}
+        collection="events"
+        onClick={() => {
+          // eslint-disable-next-line no-alert
+          if (window.confirm(`Are you sure you want to deactivate your account: ${user.userName}?\n(Careful, there is no undoing this request!)`)) { handleDeleteClick(user._id); }
+        }}
+      >
+        Deactivate Account
+      </button>
+      {/* </>
+      )} */}
     </>
   );
 };

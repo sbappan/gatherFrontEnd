@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router';
 import {
-  getOneItem, getAllItemsAsObject, getAssociatedItems, createOrUpdateItem, deleteItem,
+  getOneItem, getAllItemsAsObject, getAssociatedItems, createOrUpdateItem,
 } from '../Helpers';
 import profile from '../stockProfileImage.png';
 import { AuthContext } from '../context/AuthContext';
@@ -67,33 +67,6 @@ const ViewProfile = (props) => {
     }
   };
 
-  //
-  const handleDeleteClick = async (uId) => {
-    groups.map((m, i) => {
-      groups[i].members.map((id, j) => {
-        if (groups[i].members[j]._id === userInfo._id) {
-          groups[i].members.splice(j, 1);
-
-          const bodyData = {
-            members: groups[i].members,
-          };
-          createOrUpdateItem('PUT', 'groups', bodyData, groups[i]._id);
-        }
-        return groups[i].members;
-      });
-      return groups;
-    });
-
-    const updatedData = await deleteItem('users', uId);
-
-    if (!updatedData.errors) {
-      authContext.logout(true);
-    } else {
-    // console.log(updatedData.errors);
-    }
-  };
-
-
   const profileStyle = { width: '10rem', height: 'auto' };
   const userPhoto = user.photo || profile;
 
@@ -146,26 +119,6 @@ const ViewProfile = (props) => {
         ))}
       </ul>
       {events.length === 0 && 'None'}
-
-      <br />
-      <br />
-      {userInfo._id === userId && (
-      <>
-        <button
-          type="button"
-          className="danger"
-          collection="events"
-          onClick={() => {
-          // eslint-disable-next-line no-alert
-            if (window.confirm(`Are you sure you want to deactivate your account: ${user.userName}?\n(Careful, there is no undoing this request!)`)) { handleDeleteClick(user._id); }
-          }}
-        >
-          Deactivate Account
-        </button>
-      </>
-      )}
-
-
     </div>
   );
 };
