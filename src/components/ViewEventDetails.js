@@ -117,6 +117,9 @@ const ViewEventDetails = () => {
         && `${event.location.line1} ${event.location.line2} ${event.location.city} ${event.location.province} ${event.location.postalCode}`}
       </p>
       <p>{`Date & Time: ${moment(event.date).format('LLL')}`}</p>
+      <br />
+      {group.members && !(group.members.map((m) => m._id).includes(userInfo._id))
+       && (<p>Join the group to attend this event</p>)}
       {group.members
       && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
       && (
@@ -175,7 +178,7 @@ const ViewEventDetails = () => {
           Attend Event
         </button>
         {event.notGoing && (event.notGoing.includes(userInfo._id) ? (
-          <h1>You are currently not attending this event!</h1>
+          <h4>You are currently not attending this event!</h4>
         ) : (
           <button
             type="button"
