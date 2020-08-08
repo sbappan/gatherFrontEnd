@@ -155,7 +155,16 @@ const ViewGroupDetails = () => {
       && (
       <div>
         <Link to={`/events/create/${group._id}`}>
-          <button type="button" className="safe" collection="groups">Create Event</button>
+          <button type="button" className="success" collection="groups">Create Event</button>
+        </Link>
+      </div>
+      )}
+      <br />
+      {group.members
+      && (
+      <div>
+        <Link to={`/groups/chat/${group._id}`}>
+          <button type="button" className="safe">Group chat</button>
         </Link>
       </div>
       )}
