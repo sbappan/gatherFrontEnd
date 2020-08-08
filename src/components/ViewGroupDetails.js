@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, Redirect } from 'react-router-dom';
-import moment from 'moment';
 import {
   getOneItem, getAllItemsAsObject, getGroupEvents, createOrUpdateItem, deleteItem,
 } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
+import GroupPost from './GroupPost';
 
 const ViewGroupDetails = () => {
   const authContext = useContext(AuthContext);
@@ -245,19 +245,12 @@ function EventsTab({ events }) {
   );
 }
 
+
 function GroupFeedTab({ group, members }) {
   return (
     <div className="groupFeedContainer groupTab">
       {group.posts && group.posts.map((post) => (
-        <p key={post._id}>
-          {`Message: ${post.message}`}
-          <br />
-          {`Date: ${(`${moment(post.date).format('ll')} @ ${moment(post.date).format('LT')}`)}`}
-          <br />
-          <Link to={`/users/${post.createdBy}`}>{`Post author: ${members[post.createdBy].fname} ${members[post.createdBy].lname}`}</Link>
-          <br />
-          <br />
-        </p>
+        <GroupPost post={post} posts={group.posts} group={group._id} members={members} key={`${post._id} ${post.date}`} />
       ))}
     </div>
   );

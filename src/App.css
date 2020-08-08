@@ -306,3 +306,15 @@ main input[type=submit] {
 .groupTab {
   min-height: 40vh;
 }
+
+.postComment {
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: .5rem;
+  margin: .5rem;
+  padding: .5rem;
+}
+
+.inputChat input[type="text"] {
+  width: 90%;
+  margin-right: 1rem;
+}

@@ -31,7 +31,6 @@ const GroupChat = () => {
     getData();
   }, [groupId]);
 
-
   useEffect(() => {
     const timer = setInterval(() => {
       const getData = async () => {
