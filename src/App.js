@@ -35,6 +35,7 @@ import FaqPage from './components/FaqPage';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import ChangePassword from './components/ChangePassword';
+import GroupChat from './components/GroupChat';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -91,6 +92,9 @@ const AppRoutes = () => (
 
     <AuthenticatedRoute exact path="/groups/create">
       <CreateGroup />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/groups/chat/:_id">
+      <GroupChat />
     </AuthenticatedRoute>
     <AuthenticatedRoute path="/events/create/:_id">
       <CreateEvent />

@@ -227,3 +227,43 @@ main button.filterButton:focus {
   /* grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); */
   grid-gap: 1rem;
 }
+
+.chatContainer {
+  border: 1px solid #111111;
+  border-radius: 1rem;
+  min-height: 60vh;
+  max-height: 80vh;
+  overflow-y:  auto;
+}
+
+.chatContainer > div:nth-child(even) {
+  background-color: #e3f6f5;
+}
+
+.chatLine {
+  display: flex;
+  padding: .5rem;
+}
+
+.chatLine .senderName, .chatInput .senderName {
+  min-width: 8rem;
+}
+
+.chatInput {
+  margin-top: 1rem;
+  display: flex;
+  width: 100%;
+}
+
+.chatInput .inputMessage {
+  flex-grow: 2;
+}
+
+.chatInput .inputMessage input[type=text] {
+  width: 90%;
+  margin-right: 2%;
+}
+
+.chatInput .inputMessage input[type=submit] {
+  width: 8%;
+}
