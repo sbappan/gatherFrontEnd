@@ -41,7 +41,7 @@ const GroupChat = () => {
       getData();
     }, 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [groupId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
