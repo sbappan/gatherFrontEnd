@@ -79,6 +79,9 @@ const Login = () => {
       <Link to="/forgotpassword" style={{ color: '#111', textDecoration: 'none', marginTop: '1rem' }}>
         <h4>Forgot password?</h4>
       </Link>
+      <Link to="/faq">
+        <h5>FAQ</h5>
+      </Link>
     </>
   );
 };

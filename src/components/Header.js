@@ -9,9 +9,6 @@ function Header() {
         <Link to="/">
           <h2>Gather</h2>
         </Link>
-        <Link to="/FAQ">
-          <h3>FAQ</h3>
-        </Link>
       </nav>
       <HeaderDropdown />
     </header>
