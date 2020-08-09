@@ -48,46 +48,50 @@ const GroupPost = ({
   };
 
   return (
-    <div>
-      <p>
-        {`Message: ${postState.message}`}
-        <br />
-        {`Date: ${(`${moment(postState.date).format('ll')} @ ${moment(postState.date).format('LT')}`)}`}
-        <br />
-        <Link to={`/users/${postState.createdBy}`}>{`Post author: ${members[postState.createdBy].fname} ${members[postState.createdBy].lname}`}</Link>
-        <br />
-        <br />
-      </p>
-      {postState.comments && postState.comments.map((comment) => (
-        <div key={comment._id} className="postComment">
-          <p>{comment.message}</p>
-          <p style={{ fontSize: '.75rem', color: '#909090' }}>
-            {members && members[comment.createdBy] && `${members[comment.createdBy].fname} ${members[comment.createdBy].lname}`}
-            <span style={{ fontSize: '.65rem' }}>
+    <>
+      {postState.message && (
+      <div>
+        <p>
+          {`Message: ${postState.message}`}
+          <br />
+          {`Date: ${(`${moment(postState.date).format('ll')} @ ${moment(postState.date).format('LT')}`)}`}
+          <br />
+          <Link to={`/users/${postState.createdBy}`}>{members[postState.createdBy] && `Post author: ${members[postState.createdBy].fname} ${members[postState.createdBy].lname}`}</Link>
+          <br />
+          <br />
+        </p>
+        {postState.comments && postState.comments.map((comment) => (
+          <div key={comment._id} className="postComment">
+            <p>{comment.message}</p>
+            <p style={{ fontSize: '.75rem', color: '#909090' }}>
+              {members && members[comment.createdBy] && `${members[comment.createdBy].fname} ${members[comment.createdBy].lname}`}
+              <span style={{ fontSize: '.65rem' }}>
               &nbsp;&nbsp;&nbsp;
-              {moment(comment.date).toNow(true)}
-              {' '}
-              ago
-            </span>
-            {(isAdmin() || comment.createdBy === userInfo._id) && group && <button type="button" className="danger" style={{ padding: '2px', height: 'unset', marginLeft: '1rem' }} onClick={() => handleRemove(comment._id)}>Remove</button>}
-          </p>
+                {moment(comment.date).toNow(true)}
+                {' '}
+                ago
+              </span>
+              {(isAdmin() || comment.createdBy === userInfo._id) && group && <button type="button" className="danger" style={{ padding: '2px', height: 'unset', marginLeft: '1rem' }} onClick={() => handleRemove(comment._id)}>Remove</button>}
+            </p>
+          </div>
+        ))}
+        {group && (
+        <div className="inputChat">
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="commentMessage"
+              placeholder="Enter your comment..."
+              value={commentMessage}
+              onChange={(e) => setCommentMessage(e.target.value)}
+            />
+            <input className="safe" type="submit" value="Send" />
+          </form>
         </div>
-      ))}
-      {group && (
-      <div className="inputChat">
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="commentMessage"
-            placeholder="Enter your comment..."
-            value={commentMessage}
-            onChange={(e) => setCommentMessage(e.target.value)}
-          />
-          <input className="safe" type="submit" value="Send" />
-        </form>
+        )}
       </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -33,7 +33,7 @@ const Home = () => {
       setSearch({
         interests, groups, events,
       });
-      setDashboardData({ groups, usersObj: convertArrayToObject(users) });
+      setDashboardData({ groups, usersObj: convertArrayToObject(users), events });
     };
 
     getHomePageData();
