@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import AdminDashboard from './AdminDashboard';
 import UserDashboard from './UserDashboard';
 import SearchBar from './SearchBar';
-import { getAllItems } from '../Helpers';
+import { getAllItems, convertArrayToObject } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
 
 const Home = () => {
@@ -11,6 +11,7 @@ const Home = () => {
   const { authState: { userInfo } } = authContext;
   const [countObj, setCountObj] = useState({});
   const [search, setSearch] = useState({});
+  const [dashboardData, setDashboardData] = useState({});
 
   useEffect(() => {
     const getHomePageData = async () => {
@@ -32,6 +33,7 @@ const Home = () => {
       setSearch({
         interests, groups, events,
       });
+      setDashboardData({ groups, usersObj: convertArrayToObject(users) });
     };
 
     getHomePageData();
@@ -53,7 +55,7 @@ const Home = () => {
                 <button type="button" className="success">Invite to Gather</button>
               </Link>
             </div>
-            <UserDashboard />
+            {Object.keys(dashboardData).length > 0 && <UserDashboard dashboardData={dashboardData} />}
           </>
         )
         : <h2>Loading...</h2>}

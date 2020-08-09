@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { createOrUpdateItem, getAllItemsAsObject } from '../Helpers';
+import { createOrUpdateItem } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
 
 const GroupPost = ({
@@ -9,19 +9,8 @@ const GroupPost = ({
 }) => {
   const [commentMessage, setCommentMessage] = useState('');
   const [postState, setPostState] = useState(post);
-  const [usersObj, setUsersObj] = useState({});
   const authContext = useContext(AuthContext);
   const { authState: { userInfo }, isAdmin } = authContext;
-
-  useEffect(() => {
-    const getData = async () => {
-      const usersObjData = await getAllItemsAsObject('users');
-
-      setUsersObj(usersObjData);
-    };
-
-    getData();
-  }, []);
 
   const updatePostComments = async (newCommentArr) => {
     let updatedPost = posts.filter((p) => p._id === postState._id)[0];
@@ -73,17 +62,18 @@ const GroupPost = ({
         <div key={comment._id} className="postComment">
           <p>{comment.message}</p>
           <p style={{ fontSize: '.75rem', color: '#909090' }}>
-            {usersObj && usersObj[comment.createdBy] && `${usersObj[comment.createdBy].fname} ${usersObj[comment.createdBy].lname}`}
+            {members && members[comment.createdBy] && `${members[comment.createdBy].fname} ${members[comment.createdBy].lname}`}
             <span style={{ fontSize: '.65rem' }}>
               &nbsp;&nbsp;&nbsp;
               {moment(comment.date).toNow(true)}
               {' '}
               ago
             </span>
-            {(isAdmin() || comment.createdBy === userInfo._id) && <button type="button" className="danger" style={{ padding: '2px', height: 'unset', marginLeft: '1rem' }} onClick={() => handleRemove(comment._id)}>Remove</button>}
+            {(isAdmin() || comment.createdBy === userInfo._id) && group && <button type="button" className="danger" style={{ padding: '2px', height: 'unset', marginLeft: '1rem' }} onClick={() => handleRemove(comment._id)}>Remove</button>}
           </p>
         </div>
       ))}
+      {group && (
       <div className="inputChat">
         <form onSubmit={handleSubmit}>
           <input
@@ -96,6 +86,7 @@ const GroupPost = ({
           <input className="safe" type="submit" value="Send" />
         </form>
       </div>
+      )}
     </div>
   );
 };
