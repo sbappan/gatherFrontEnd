@@ -8,10 +8,10 @@ const GroupPost = ({
   post, posts, members, group,
 }) => {
   const [commentMessage, setCommentMessage] = useState('');
-  const [post2, setPost2] = useState(post);
+  const [postState, setPostState] = useState(post);
   const [usersObj, setUsersObj] = useState({});
   const authContext = useContext(AuthContext);
-  const { authState: { userInfo } } = authContext;
+  const { authState: { userInfo }, isAdmin } = authContext;
 
   useEffect(() => {
     const getData = async () => {
@@ -23,6 +23,25 @@ const GroupPost = ({
     getData();
   }, []);
 
+  const updatePostComments = async (newCommentArr) => {
+    let updatedPost = posts.filter((p) => p._id === postState._id)[0];
+    const otherPosts = posts.filter((p) => p._id !== postState._id);
+    updatedPost = { ...updatedPost, comments: newCommentArr };
+
+    const bodyData = {
+      posts: [...otherPosts, updatedPost],
+    };
+
+    const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, group);
+    if (updatedData._id) {
+      const updatedPostData = updatedData.posts.filter((p) => p._id === postState._id)[0];
+      setPostState(updatedPostData);
+      setCommentMessage('');
+    } else {
+      // console.log('updatedData', updatedData);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (commentMessage.trim()) {
@@ -31,40 +50,27 @@ const GroupPost = ({
         createdBy: userInfo._id,
       };
 
-      const newCommentArr = [...post2.comments, newComment];
-
-      let updatedPost = posts.filter((p) => p._id === post._id)[0];
-      const otherPosts = posts.filter((p) => p._id !== post._id);
-      updatedPost = { ...updatedPost, comments: newCommentArr };
-
-      const bodyData = {
-        posts: [...otherPosts, updatedPost],
-      };
-
-      const updatedData = await createOrUpdateItem('PUT', 'groups', bodyData, group);
-      if (updatedData._id) {
-        const updatedPostData = updatedData.posts.filter((p) => p._id === post._id)[0];
-        setPost2(updatedPostData);
-        setCommentMessage('');
-      } else {
-        // console.log('updatedData', updatedData);
-      }
+      updatePostComments([...postState.comments, newComment]);
     }
+  };
+
+  const handleRemove = async (id) => {
+    updatePostComments(postState.comments.filter((c) => c._id !== id));
   };
 
   return (
     <div>
       <p>
-        {`Message: ${post2.message}`}
+        {`Message: ${postState.message}`}
         <br />
-        {`Date: ${(`${moment(post2.date).format('ll')} @ ${moment(post2.date).format('LT')}`)}`}
+        {`Date: ${(`${moment(postState.date).format('ll')} @ ${moment(postState.date).format('LT')}`)}`}
         <br />
-        <Link to={`/users/${post2.createdBy}`}>{`Post author: ${members[post2.createdBy].fname} ${members[post2.createdBy].lname}`}</Link>
+        <Link to={`/users/${postState.createdBy}`}>{`Post author: ${members[postState.createdBy].fname} ${members[postState.createdBy].lname}`}</Link>
         <br />
         <br />
       </p>
-      {post2.comments && post2.comments.map((comment, index) => (
-        <div key={index} className="postComment">
+      {postState.comments && postState.comments.map((comment) => (
+        <div key={comment._id} className="postComment">
           <p>{comment.message}</p>
           <p style={{ fontSize: '.75rem', color: '#909090' }}>
             {usersObj && usersObj[comment.createdBy] && `${usersObj[comment.createdBy].fname} ${usersObj[comment.createdBy].lname}`}
@@ -74,9 +80,8 @@ const GroupPost = ({
               {' '}
               ago
             </span>
-
+            {(isAdmin() || comment.createdBy === userInfo._id) && <button type="button" className="danger" style={{ padding: '2px', height: 'unset', marginLeft: '1rem' }} onClick={() => handleRemove(comment._id)}>Remove</button>}
           </p>
-
         </div>
       ))}
       <div className="inputChat">
