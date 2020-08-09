@@ -1,11 +1,11 @@
-import React, { useState, useEffect /* , useContext */ } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import { createOrUpdateItem, getOneItem, getAllItems } from '../Helpers';
-// import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 
 const EditGroup = () => {
-  // const authContext = useContext(AuthContext);
-  // const { authState: { userInfo } } = authContext;
+  const authContext = useContext(AuthContext);
+  const { authState: { userInfo } } = authContext;
   const { _id: groupId } = useParams();
   const [group, setGroup] = useState({});
   const [allInterests, setAllInterests] = useState([]);
