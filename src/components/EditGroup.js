@@ -39,7 +39,7 @@ const EditGroup = () => {
       }
     };
     getData();
-  }, [group.interests]);
+  }, [group.interests, group._id]);
 
   /*
   useEffect(() => {
