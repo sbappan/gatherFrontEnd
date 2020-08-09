@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
+import moment from 'moment';
 import { createOrUpdateItem, getOneItem, getAllItems } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
 
@@ -9,7 +10,7 @@ const EditGroup = () => {
   const { _id: groupId } = useParams();
   const [group, setGroup] = useState({});
   const [allInterests, setAllInterests] = useState([]);
-  // const [user, setUser] = useState({});
+  const [user, setUser] = useState({});
 
   const [name, setGroupName] = useState('');
   const [description, setGroupDescription] = useState('');
@@ -41,7 +42,6 @@ const EditGroup = () => {
     getData();
   }, [group.interests, group._id]);
 
-  /*
   useEffect(() => {
     const getUser = async () => {
       const userData = await getOneItem('users', group.updatedBy);
@@ -52,7 +52,6 @@ const EditGroup = () => {
       getUser();
     }
   }, [group.updatedBy]);
-  */
 
   const handleCheckInterest = async (id) => {
     const updatedInterests = allInterests.map((interest) => {
@@ -104,12 +103,6 @@ const EditGroup = () => {
     width: '60%',
   };
 
-  /*
-    <h3>Last updated by:</h3>
-    <p>{user._id && `${user.fname} ${user.lname} on ${moment(group.updatedAt).format('LLL')}`}</p>
-    <b />
-  */
-
   const interestStyle = {
     display: 'flex',
     alignItems: 'baseline',
@@ -158,6 +151,9 @@ const EditGroup = () => {
             </div>
           ))}
         </div>
+        <h4>Last updated by:</h4>
+        <p>{user._id && `${user.fname} ${user.lname} on ${moment(group.updatedAt).format('LLL')}`}</p>
+        <br />
         <p style={{ color: 'red' }}>{serverError}</p>
         <button
           type="button"
