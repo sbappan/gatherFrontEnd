@@ -30,6 +30,7 @@ import EditProfileInfo from './components/EditProfileInfo';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import EditEvent from './components/EditEvent';
+import EditGroup from './components/EditGroup';
 import CreateUserPost from './components/CreateUserPost';
 import FaqPage from './components/FaqPage';
 import ForgotPassword from './components/ForgotPassword';
@@ -114,6 +115,9 @@ const AppRoutes = () => (
     </AuthenticatedRoute>
     <AuthenticatedRoute path="/events/edit/:_id">
       <EditEvent />
+    </AuthenticatedRoute>
+    <AuthenticatedRoute path="/groups/edit/:_id">
+      <EditGroup />
     </AuthenticatedRoute>
 
     <AdminRoute path="/admin/groups/flag/:_id">

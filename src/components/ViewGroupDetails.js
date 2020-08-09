@@ -157,15 +157,27 @@ const ViewGroupDetails = () => {
         <Link to={`/events/create/${group._id}`}>
           <button type="button" className="success" collection="groups">Create Event</button>
         </Link>
+        <br />
+        <br />
       </div>
       )}
-      <br />
+      {group.members
+      && group.members.filter((m) => m.isAdmin).map((m) => m._id).includes(userInfo._id)
+      && (
+      <div>
+        <Link to={`/groups/edit/${group._id}`}>
+          <button type="button" className="success">Edit Group</button>
+        </Link>
+        <br />
+        <br />
+      </div>
+      )}
       {group.members
       && group.members.filter((m) => m._id).map((m) => m._id).includes(userInfo._id)
       && (
       <div>
         <Link to={`/groups/chat/${group._id}`}>
-          <button type="button" className="safe">Group chat</button>
+          <button type="button" className="safe">Group Chat</button>
         </Link>
       </div>
       )}
