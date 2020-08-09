@@ -38,6 +38,7 @@ import ResetPassword from './components/ResetPassword';
 import ChangePassword from './components/ChangePassword';
 import GroupChat from './components/GroupChat';
 import InviteUser from './components/InviteUser';
+import PageNotFound from './components/PageNotFound';
 
 const AuthenticatedRoute = ({ children, ...rest }) => {
   const authContext = useContext(AuthContext);
@@ -154,6 +155,7 @@ const AppRoutes = () => (
     <AuthenticatedRoute path="/users/:_id">
       <ViewProfile />
     </AuthenticatedRoute>
+    <Route path="*" component={PageNotFound} />
   </Switch>
 );
 
