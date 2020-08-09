@@ -28,9 +28,16 @@ const UserDashboard = ({ dashboardData }) => {
     .filter((g) => g.interests.some((i) => userInfo.interests.includes(i)))
     .filter((g) => !g.members.map((m) => m._id).includes(userInfo._id));
 
+  // Filter for groups with the user as a member
+  const userGroups = dashboardData.groups
+    .filter((g) => g.members.map((m) => m._id).includes(userInfo._id));
+
+  // Filter for events with the user as an attendee
+  const userEvents = dashboardData.events.filter((e) => e.attendees.includes(userInfo._id));
+
   return (
     <>
-      <h3>User Dashboard</h3>
+      <h3 style={{ margin: '1rem 0' }}>User Dashboard</h3>
       <div className="dashboard">
         <div className="postsContainer">
           {allPosts.length > 0 ? (
@@ -46,17 +53,43 @@ const UserDashboard = ({ dashboardData }) => {
             </div>
           ) : <p>No posts yet</p>}
         </div>
-        <div className="suggestedGroups">
-          <h4>
-            Suggested groups based on your interests
-          </h4>
-          {suggestedGroups.map((g) => (
-            <p key={g._id}>
-              <Link to={`/groups/${g._id}`}>
-                {g.name}
-              </Link>
-            </p>
-          ))}
+        <div className="allGroups">
+          <div className="userEvents">
+            <h4>
+              My events
+            </h4>
+            {userEvents.map((e) => (
+              <p key={e._id}>
+                <Link to={`/events/${e._id}`}>
+                  {e.name}
+                </Link>
+              </p>
+            ))}
+          </div>
+          <div className="userGroups">
+            <h4>
+              My groups
+            </h4>
+            {userGroups.map((g) => (
+              <p key={g._id}>
+                <Link to={`/groups/${g._id}`}>
+                  {g.name}
+                </Link>
+              </p>
+            ))}
+          </div>
+          <div className="suggestedGroups">
+            <h4>
+              Suggested groups
+            </h4>
+            {suggestedGroups.map((g) => (
+              <p key={g._id}>
+                <Link to={`/groups/${g._id}`}>
+                  {g.name}
+                </Link>
+              </p>
+            ))}
+          </div>
         </div>
       </div>
     </>
