@@ -115,7 +115,7 @@ main button, main input[type="submit"] {
 }
 
 main button:not(.activeFilter):hover, main button:not(.activeFilter):active {
-  transform: scale(1.05);
+  /* transform: scale(1.05); */
 }
 
 main button:focus {
