@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link, Redirect } from 'react-router-dom';
-import moment from 'moment';
 import {
   getOneItem, getAllItemsAsObject, getGroupEvents, createOrUpdateItem, deleteItem,
 } from '../Helpers';
 import { AuthContext } from '../context/AuthContext';
+import GroupPost from './GroupPost';
 
 const ViewGroupDetails = () => {
   const authContext = useContext(AuthContext);
@@ -228,7 +228,7 @@ const ViewGroupDetails = () => {
 
 function DescriptionTab({ description }) {
   return (
-    <div>
+    <div className="groupTab">
       <p>{ description }</p>
     </div>
   );
@@ -236,7 +236,7 @@ function DescriptionTab({ description }) {
 
 function MembersTab({ members, group }) {
   return (
-    <div>
+    <div className="groupTab">
       {group.members && group.members.map((member) => (
         <p key={member._id}>
           <Link to={`/users/${member._id}`}>
@@ -251,25 +251,18 @@ function MembersTab({ members, group }) {
 
 function EventsTab({ events }) {
   return (
-    <div>
+    <div className="groupTab">
       {events.map((event) => <p key={event._id}><Link to={`/events/${event._id}`}>{event.name}</Link></p>)}
     </div>
   );
 }
 
+
 function GroupFeedTab({ group, members }) {
   return (
-    <div>
+    <div className="groupFeedContainer groupTab">
       {group.posts && group.posts.map((post) => (
-        <p key={post._id}>
-          {`Message: ${post.message}`}
-          <br />
-          {`Date Created: ${(`${moment(post.date).format('L')} @ ${moment(post.date).format('LT')}`)}`}
-          <br />
-          <Link to={`/users/${post.createdBy}`}>{`Created By: ${members[post.createdBy].fname} ${members[post.createdBy].lname}`}</Link>
-          <br />
-          <br />
-        </p>
+        <GroupPost post={post} posts={group.posts} group={group._id} members={members} key={`${post._id} ${post.date}`} />
       ))}
     </div>
   );
