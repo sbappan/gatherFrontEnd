@@ -41,9 +41,11 @@ function CountBox({ collection, count }) {
     margin: 0,
   };
 
+  const collectionLink = collection !== 'interests' ? `/admin/${collection}` : '';
+
   return (
     <div>
-      <Link to={`/admin/${collection}`} style={linkStyle}>
+      <Link to={collectionLink} style={linkStyle}>
         <h4>
           {`No of ${capitalizeFirstLetter(collection)}`}
         </h4>
