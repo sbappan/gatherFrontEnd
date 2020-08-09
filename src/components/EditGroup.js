@@ -76,10 +76,10 @@ const EditGroup = () => {
       description,
       interests,
       createdBy: group.createdBy,
-      // updatedBy: userInfo._id,
+      updatedBy: userInfo._id,
       status: {
-        isFlagged: false,
-        reason: '',
+        isFlagged: group.status.isFlagged,
+        reason: group.status.reason,
         updatedBy: group.status.updatedBy,
       },
     };
